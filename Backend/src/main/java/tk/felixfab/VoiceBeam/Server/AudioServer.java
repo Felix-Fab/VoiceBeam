@@ -41,12 +41,14 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     protected boolean onConnect(SelectionKey key) {
+        System.out.println("Client connected");
         return true;
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-
+        System.out.println("Nachricht erhalten");
+        webSocket.send("Server hat Nachricht erhaten");
     }
 
     @Override

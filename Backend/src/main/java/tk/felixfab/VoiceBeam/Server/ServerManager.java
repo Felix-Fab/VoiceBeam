@@ -12,6 +12,7 @@ public class ServerManager {
     public static void startDefaultServers() throws UnknownHostException {
 
         audioServer = new AudioServer(81);
+        audioServer.start();
 
     }
 }

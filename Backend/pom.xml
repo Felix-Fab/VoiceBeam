@@ -28,7 +28,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>tk.felixfab.voicebeam.VoiceBeam</mainClass>
+                            <mainClass>tk.felixfab.VoiceBeam.VoiceBeam</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

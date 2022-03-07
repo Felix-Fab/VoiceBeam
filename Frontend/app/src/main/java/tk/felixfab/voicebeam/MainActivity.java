@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ws.connectAsynchronously();
+                ws.sendText("Message");
             }
         });
 
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
+            ws.connectAsynchronously();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.media.AudioRecord;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +20,9 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
+import java.io.Console;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,7 +37,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         MediaRecorder myAudioRecorder = new MediaRecorder();
-        File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AudioRecording.3gp");
+        MediaPlayer mediaPlayer = new MediaPlayer();
+
+        File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "OutputCache.mp3");
+        File inputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "InputCache.mp3");
+
+        try {
+            mediaPlayer.setDataSource(inputFile.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         button = findViewById(R.id.button);
 
@@ -47,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
 
-                    myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                    myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                    myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+                    myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
                     myAudioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                     myAudioRecorder.setOutputFile(outputFile);
 
@@ -62,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         myAudioRecorder.stop();
-                        myAudioRecorder.release();
+                        myAudioRecorder.reset();
+
                         ws.sendBinary(Files.readAllBytes(outputFile.toPath()));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -85,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onBinaryMessage(WebSocket websocket, byte[] binary) throws Exception {
 
+                    System.out.println("Nachricht erhalten");
+
+                    try (FileOutputStream outputStream = new FileOutputStream(inputFile)) {
+                        outputStream.write(binary);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
                 }
             });
 

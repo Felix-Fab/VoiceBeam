@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.nio.file.Files;
 import java.util.Collections;
 
 public class AudioServer extends WebSocketServer {
@@ -53,10 +54,17 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
+        System.out.println("File erhalten");
 
-        File outputFile = new File("C:\\");
+        File outputFile = new File("Hallo.mp3");
         try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             outputStream.write(message.array());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            conn.send(Files.readAllBytes(outputFile.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }

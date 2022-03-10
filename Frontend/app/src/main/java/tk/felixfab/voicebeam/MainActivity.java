@@ -6,33 +6,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import android.os.HandlerThread;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ToggleButton;
 
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
-import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class MainActivity extends AppCompatActivity {
     WebSocket ws = null;
     Button button;
+
+    public static HandlerThread mHandlerThread = new HandlerThread("yeye");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        button = findViewById(R.id.button);
+        button = findViewById(R.id.btn_login);
 
         WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(5000);
 
@@ -65,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
                     if (audioManager != null) {
                         for(AudioDeviceInfo deviceInfo : audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)){
-                            if(deviceInfo.getType()==AudioDeviceInfo.TYPE_
-                                    || deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADSET){
+                            if(deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADSET){
                                 return true;
                             }
                         }

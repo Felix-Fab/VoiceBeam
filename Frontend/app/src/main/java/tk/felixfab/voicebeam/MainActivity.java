@@ -3,6 +3,9 @@ package tk.felixfab.voicebeam;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -58,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+
+                    AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+                    if (audioManager != null) {
+                        for(AudioDeviceInfo deviceInfo : audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)){
+                            if(deviceInfo.getType()==AudioDeviceInfo.TYPE_
+                                    || deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADSET){
+                                return true;
+                            }
+                        }
+                    }
 
                     myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
                     myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);

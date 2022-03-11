@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5811E"
-    tools:context=".MainActivity">
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+    tools:context=".Activity.MainActivity">
 
     <TextView
         android:id="@+id/l_voicebeam"
@@ -49,6 +50,7 @@
         android:id="@+id/tf_password"
         android:layout_width="278dp"
         android:layout_height="51dp"
+        android:layout_marginTop="20px"
         android:background="@color/white"
         android:ems="10"
         android:fontFamily="@font/alata"
@@ -70,7 +72,6 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="276dp"
         android:layout_height="65dp"
-        android:layout_marginBottom="228dp"
         android:backgroundTint="#AC5C21"
         android:text="Login"
         android:textColor="#FFFFFF"
@@ -78,6 +79,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_password"
+        app:layout_constraintVertical_bias="0.141" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

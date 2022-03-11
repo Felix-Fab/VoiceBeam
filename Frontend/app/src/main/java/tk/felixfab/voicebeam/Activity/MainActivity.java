@@ -2,6 +2,7 @@ package tk.felixfab.voicebeam.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.HandlerThread;
@@ -92,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
             if(s.equals("Success")){
 
                 //TODO: Login Prozess
+
+                Intent intent = new Intent(MainActivity.this,UserMenu.class);
+                startActivity(intent);
 
                 Toast.ShowToast(MainActivity.this,"Login Success", android.widget.Toast.LENGTH_LONG);
 

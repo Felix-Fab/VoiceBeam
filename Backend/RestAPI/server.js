@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 
-import loginRouter from "./routers/login.js";
+import loginRouter from "./routers/manager.js";
 
 const PORT = 3000;
 const DBURL = "mongodb://admin:Cstrike1@localhost:27017/voicebeam?authSource=admin";

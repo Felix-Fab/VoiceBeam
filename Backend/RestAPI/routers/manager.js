@@ -81,6 +81,8 @@ async (req, res) => {
     });
 });
 
+
+
 router.post("/status",notAuthenticated,
     check("email")
         .isEmail()
@@ -115,8 +117,35 @@ async (req, res) => {
          username: foundUser.username,
          email: foundUser.email,
          status: foundUser.status
-     })
-}                     )
+     });
+});
+
+router.get("/getUsers",notAuthenticated,
+    check("email")
+        .isEmail()
+            .withMessage("Please provide a valid Email!")
+        .isLength({max: 254})
+            .withMessage("Email cannot be longer than 254 Characters!"),
+async(req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
+    const foundUser = await User.findOne({email: req.body.email});
+
+    if(!foundUser){
+        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
+    }
+
+    const Users = await User.find().where('status').in(true);
+
+    return res.status(200).json({
+        username: Users.username
+    });
+});      
 
 function notAuthenticated(req, res, next) {
     const authHeader = req.headers["authorization"];

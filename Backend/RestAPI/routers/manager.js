@@ -140,10 +140,10 @@ async(req,res) => {
         return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
     }
 
-    const Users = await User.find().where('status').in(true);
+    const Users = await User.find({status: true},"username").exec();
 
     return res.status(200).json({
-        username: Users.username
+        users: Users
     });
 });      
 

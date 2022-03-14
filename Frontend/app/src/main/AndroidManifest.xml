@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.UserMenu"
+            android:name=".Activity.UserMenuActivity"
             android:exported="true">
         </activity>
 

@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.HandlerThread;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     EditText tf_email;
     EditText tf_password;
 
+    String username;
+    String email;
+
     LoginTask loginTask;
 
     @Override
@@ -46,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
 
                 loginTask = new LoginTask();
                 loginTask.execute();
-
             }
         });
     }
 
     public class LoginTask extends AsyncTask<String, Integer, String> {
-
 
         @Override
         protected String doInBackground(String... strings) {
@@ -74,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = HTTP.getJSONBody(con);
 
+                    username = jsonObject.getString("username");
+                    email = jsonObject.getString("email");
+
                     if(con.getResponseCode() == 200){
                         return "Success";
                     }else{
@@ -94,7 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
                 //TODO: Login Prozess
 
-                Intent intent = new Intent(MainActivity.this,UserMenu.class);
+                Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
+                intent.putExtra("email",email);
+                intent.putExtra("username",username);
                 startActivity(intent);
 
                 Toast.ShowToast(MainActivity.this,"Login Success", android.widget.Toast.LENGTH_LONG);

@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import tk.felixfab.voicebeam.Data.UserData;
+import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
 
 public class UserAdapter implements ListAdapter {
@@ -43,8 +44,8 @@ public class UserAdapter implements ListAdapter {
         return arrayList.size();
     }
     @Override
-    public Object getItem(int position) {
-        return position;
+    public UserData getItem(int position) {
+        return arrayList.get(position);
     }
     @Override
     public long getItemId(int position) {
@@ -60,14 +61,9 @@ public class UserAdapter implements ListAdapter {
         if(convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             convertView = layoutInflater.inflate(R.layout.listviewrow, null);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-            TextView tittle = convertView.findViewById(R.id.TextView);
+            TextView title = convertView.findViewById(R.id.TextView);
             ImageView imag = convertView.findViewById(R.id.ImageView);
-            tittle.setText(userData.UserName);
+            title.setText(userData.UserName);
             Picasso.with(context)
                     .load(android.R.mipmap.sym_def_app_icon)
                     .into(imag);

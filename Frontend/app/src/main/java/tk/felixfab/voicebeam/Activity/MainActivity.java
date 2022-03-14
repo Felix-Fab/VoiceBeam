@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (tf_email.getText().length() > 0 && tf_password.length() > 0) {
 
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/login", "POST");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/login", "PATCH");
 
                     String json = "{ \"email\": \"" + tf_email.getText() + "\", \"password\":\"" + tf_password.getText() + "\"}";
 

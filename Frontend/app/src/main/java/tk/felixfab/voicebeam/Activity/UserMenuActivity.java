@@ -3,6 +3,8 @@ package tk.felixfab.voicebeam.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -43,6 +45,15 @@ public class UserMenuActivity extends AppCompatActivity {
 
         userInput = new UserInput();
         userInput.execute();
+
+        lv_users.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserData itemTitle = (UserData) parent.getAdapter().getItem(position);
+
+                Toast.ShowToast(UserMenuActivity.this,itemTitle.UserName, android.widget.Toast.LENGTH_LONG);
+            }
+        });
     }
 
     public class UserInput extends AsyncTask<String, Integer, String> {
@@ -51,7 +62,7 @@ public class UserMenuActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
 
             try {
-                HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/getUsers", "GET");
+                HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/getUsers", "PATCH");
 
                 String json = "{ \"email\": \"" + intent.getStringExtra("email") + "\"}";
 

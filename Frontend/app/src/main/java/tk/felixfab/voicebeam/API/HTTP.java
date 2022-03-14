@@ -34,15 +34,16 @@ public class HTTP {
             response = responseString.toString();
         }
 
-        return new JSONObject(response);
+        System.out.println(response);
 
+        return new JSONObject(response);
     }
 
     public static HttpURLConnection createDefaultConnection(String URL,String RequestMethod) throws IOException {
 
         java.net.URL url = new URL(URL);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
+        con.setRequestMethod(RequestMethod);
 
         con.setConnectTimeout(5000);
         con.setReadTimeout(5000);

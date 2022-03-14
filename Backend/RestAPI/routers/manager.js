@@ -6,7 +6,7 @@ import User from "../models/user.js";
 
 const router = Router();
 
-router.post("/register",notAuthenticated,
+router.patch("/register",notAuthenticated,
     check("username")
         .isLength({min:1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -52,7 +52,7 @@ async (req, res) => {
     return res.status(201).json({info: "Account has been successfully created!"});
 });
 
-router.post("/login",notAuthenticated,
+router.patch("/login",notAuthenticated,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -83,7 +83,7 @@ async (req, res) => {
 
 
 
-router.post("/status",notAuthenticated,
+router.patch("/status",notAuthenticated,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -120,7 +120,7 @@ async (req, res) => {
      });
 });
 
-router.get("/getUsers",notAuthenticated,
+router.patch("/getUsers",notAuthenticated,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")

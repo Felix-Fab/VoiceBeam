@@ -1,10 +1,12 @@
 package tk.felixfab.VoiceBeam.Server;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import top.jfunc.json.impl.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +16,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.Collections;
 
 public class AudioServer extends WebSocketServer {
@@ -32,7 +35,7 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-
+        System.out.println(webSocket.getResourceDescriptor());
     }
 
     @Override
@@ -48,8 +51,21 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-        System.out.println("Nachricht erhalten");
-        webSocket.send("Server hat Nachricht erhaten");
+
+        JSONObject object = new JSONObject(s);
+
+        byte[] bytes = Base64.getDecoder().decode(object.getString("data"));
+
+        try{
+            try (FileOutputStream fos = new FileOutputStream("hallo.mp3")) {
+                fos.write(bytes);
+                //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
+            }
+        }catch (Exception e){
+
+        }
+
+        System.out.println(object.getString("name"));
     }
 
     @Override

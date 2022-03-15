@@ -2,6 +2,7 @@ package tk.felixfab.voicebeam.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,8 +21,15 @@ import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Message.AlertBox;
 import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
+import tk.felixfab.voicebeam.User.UserInfos;
 
 public class MainActivity extends AppCompatActivity {
+    public static Context context;
+
+    public static Context getContext(){
+        return context;
+    }
+
     WebSocket ws = null;
     Button btn_login;
     EditText tf_email;
@@ -36,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = getContext();
 
         btn_login = findViewById(R.id.btn_login);
         tf_email = findViewById(R.id.tf_email);
@@ -73,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = HTTP.getJSONBody(con);
 
-                    username = jsonObject.getString("username");
-                    email = jsonObject.getString("email");
+                    UserInfos.setUsername(jsonObject.getString("username"));
+                    UserInfos.setEmail(jsonObject.getString("email"));
 
                     if(con.getResponseCode() == 200){
                         return "Success";

@@ -13,8 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import tk.felixfab.voicebeam.Data.UserData;
-import tk.felixfab.voicebeam.Message.Toast;
+import tk.felixfab.voicebeam.Adapter.Data.UserData;
 import tk.felixfab.voicebeam.R;
 
 public class UserAdapter implements ListAdapter {

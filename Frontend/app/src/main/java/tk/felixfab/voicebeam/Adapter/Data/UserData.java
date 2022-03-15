@@ -1,4 +1,4 @@
-package tk.felixfab.voicebeam.Data;
+package tk.felixfab.voicebeam.Adapter.Data;
 
 public class UserData {
 

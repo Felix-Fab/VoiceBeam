@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
@@ -19,8 +18,7 @@ import java.util.ArrayList;
 
 import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Adapter.UserAdapter;
-import tk.felixfab.voicebeam.Data.UserData;
-import tk.felixfab.voicebeam.Message.AlertBox;
+import tk.felixfab.voicebeam.Adapter.Data.UserData;
 import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
 

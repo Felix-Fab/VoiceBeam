@@ -6,6 +6,8 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import tk.felixfab.VoiceBeam.Manager.FileManager;
+import tk.felixfab.VoiceBeam.etc.Logger;
 import top.jfunc.json.impl.JSONObject;
 
 import java.io.File;
@@ -35,12 +37,12 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        System.out.println(webSocket.getResourceDescriptor());
+        Logger.writeInfoMessage("Client connected: " + webSocket.getRemoteSocketAddress());
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-
+        Logger.writeInfoMessage("Client disconnected: " + webSocket.getRemoteSocketAddress());
     }
 
     @Override
@@ -54,46 +56,17 @@ public class AudioServer extends WebSocketServer {
 
         JSONObject object = new JSONObject(s);
 
-        byte[] bytes = Base64.getDecoder().decode(object.getString("data"));
-
-        try{
-            try (FileOutputStream fos = new FileOutputStream("hallo.mp3")) {
-                fos.write(bytes);
-                //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
-            }
-        }catch (Exception e){
-
-        }
-
-        System.out.println(object.getString("name"));
-    }
-
-    @Override
-    public void onMessage(WebSocket conn, ByteBuffer message) {
-        System.out.println("File erhalten");
-
-        File outputFile = new File("Hallo.mp3");
-        try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
-            outputStream.write(message.array());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            conn.send(Files.readAllBytes(outputFile.toPath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileManager.saveTempAudio(object.getString("data"),object.getString("from") + ".mp3");
     }
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-
+        Logger.writeErrorMessage(e.getMessage());
     }
 
     @Override
     public void onStart() {
-        System.out.println("AudioServer started...");
+        Logger.writeSuccessMessage("AudioServer started");
     }
 }
 

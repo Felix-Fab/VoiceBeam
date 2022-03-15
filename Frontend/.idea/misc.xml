@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/drawable/eoundedbutton.xml" value="0.297" />
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/drawable/roundedbutton.xml" value="0.297" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/audio_send.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/audiosend.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/listviewrow.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/user_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/usermenu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/infof/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/layout/activity_main.xml" value="0.2128623188405797" />

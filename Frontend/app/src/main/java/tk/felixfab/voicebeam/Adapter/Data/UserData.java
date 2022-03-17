@@ -2,11 +2,13 @@ package tk.felixfab.voicebeam.Adapter.Data;
 
 public class UserData {
 
-    public String UserName;
-    public String Image;
+    public String Text;
+    public String Details;
+    public boolean Sended;
 
-    public UserData(String UserName, String image){
-        this.UserName = UserName;
-        this.Image = image;
+    public UserData(String text, String details,Boolean sended){
+        this.Text = text;
+        this.Details = details;
+        this.Sended = sended;
     }
 }

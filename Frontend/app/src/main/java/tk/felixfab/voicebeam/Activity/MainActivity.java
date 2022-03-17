@@ -107,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: Login Prozess
 
                 Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
-                intent.putExtra("email",email);
-                intent.putExtra("username",username);
                 startActivity(intent);
 
                 Toast.ShowToast(MainActivity.this,"Login Success", android.widget.Toast.LENGTH_LONG);

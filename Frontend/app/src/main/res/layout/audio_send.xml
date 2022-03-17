@@ -60,12 +60,15 @@
         android:textSize="22sp" />
 
     <ListView
-        android:id="@+id/lv_history"
+        android:id="@+id/lv_messages"
         android:layout_width="match_parent"
         android:layout_height="574dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="56dp">
+        android:layout_marginTop="56dp"
+        android:divider="@null"
+        android:dividerHeight="10dp"
+        android:listSelector="@android:color/transparent">
 
     </ListView>
 

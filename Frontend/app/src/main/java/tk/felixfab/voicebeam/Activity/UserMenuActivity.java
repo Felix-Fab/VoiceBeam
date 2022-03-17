@@ -5,22 +5,30 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import tk.felixfab.voicebeam.API.HTTP;
-import tk.felixfab.voicebeam.Adapter.UserAdapter;
-import tk.felixfab.voicebeam.Adapter.Data.UserData;
+import tk.felixfab.voicebeam.Adapter.UsersAdapter;
+import tk.felixfab.voicebeam.Adapter.Data.UsersData;
 import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
+import tk.felixfab.voicebeam.User.UserInfos;
 
 public class UserMenuActivity extends AppCompatActivity {
 
@@ -30,7 +38,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
     UserInput userInput;
 
-    ArrayList<UserData> arrayList = new ArrayList<UserData>();
+    ArrayList<UsersData> arrayList = new ArrayList<UsersData>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +55,11 @@ public class UserMenuActivity extends AppCompatActivity {
         lv_users.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                UserData itemTitle = (UserData) parent.getAdapter().getItem(position);
+                UsersData itemTitle = (UsersData) parent.getAdapter().getItem(position);
 
-                Toast.ShowToast(UserMenuActivity.this,itemTitle.UserName, android.widget.Toast.LENGTH_LONG);
+                Intent intent = new Intent(UserMenuActivity.this, AudioSendActivity.class);
+                intent.putExtra("username",itemTitle.UserName);
+                startActivity(intent);
             }
         });
     }
@@ -62,7 +72,7 @@ public class UserMenuActivity extends AppCompatActivity {
             try {
                 HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/getUsers", "PATCH");
 
-                String json = "{ \"email\": \"" + intent.getStringExtra("email") + "\"}";
+                String json = "{ \"email\": \"" + UserInfos.getEmail() + "\"}";
 
                 con.setDoOutput(false);
 
@@ -74,7 +84,7 @@ public class UserMenuActivity extends AppCompatActivity {
                 JSONObject jsonObject = HTTP.getJSONBody(con);
 
                 for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
-                    arrayList.add(new UserData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
+                    arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
                 }
 
                 if(con.getResponseCode() == 200){
@@ -91,7 +101,7 @@ public class UserMenuActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if(s.equals("Success")){
-                UserAdapter userAdapter = new UserAdapter(UserMenuActivity.this,arrayList);
+                UsersAdapter userAdapter = new UsersAdapter(UserMenuActivity.this,arrayList);
                 lv_users.setAdapter(userAdapter);
             }else{
                 Toast.ShowToast(UserMenuActivity.this,s, android.widget.Toast.LENGTH_LONG);

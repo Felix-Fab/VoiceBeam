@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/audio_send_listview_textview_username"
         android:textSize="25dp"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip" />
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp" />
 
     <TextView
         android:layout_width="match_parent"

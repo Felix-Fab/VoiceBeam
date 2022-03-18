@@ -89,9 +89,6 @@ router.patch("/status",notAuthenticated,
             .withMessage("Please provide a valid Email!")
         .isLength({ max: 254 })
             .withMessage("Email cannot be longer that 254 Characters!"),
-    check("password")
-        .isLength({min: 1, max: 128})
-            .withMessage("Please provide a valid Password!"),
     check("status")
         .isBoolean(true) 
             .withMessage("Status must be a Boolean!"),
@@ -105,7 +102,7 @@ async (req, res) => {
 
     const foundUser = await User.findOne({email: req.body.email});
 
-    if(!foundUser || !await compareHash(foundUser.password,req.body.password)){
+    if(!foundUser){
         return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
     }
     
@@ -140,7 +137,7 @@ async(req,res) => {
         return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
     }
 
-    const Users = await User.find({status: true},"username").exec();
+    const Users = await User.find({status: true, username: { $ne: foundUser.username } },"username").exec();
 
     return res.status(200).json({
         users: Users

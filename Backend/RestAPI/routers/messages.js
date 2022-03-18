@@ -1,6 +1,7 @@
 import {Router} from "express";
 import { check, validationResult } from "express-validator";
 import Message from "../models/message.js";
+import User from "../models/user.js";
 
 const router = Router();
 
@@ -24,6 +25,14 @@ async (req,res) => {
         return res.status(400).json({
             errors: errors.array()
         });
+    }
+
+    const User1 = await User.findOne({username: req.body.from});
+    const User2 = await User.findOne({username: req.body.to})
+
+
+    if(!User1 || !User2){
+        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
     }
 
     const newMessage = new Message({
@@ -54,6 +63,13 @@ async (req, res) => {
         return res.status(400).json({
             errors: errors.array()
         });
+    }
+
+    const User1 = await User.findOne({username: req.body.username1});
+    const User2 = await User.findOne({username: req.body.username2})
+
+    if(!User1 || !User2){
+        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
     }
 
     const Messages = await Message.find({

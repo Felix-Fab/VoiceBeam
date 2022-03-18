@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.STORAGE"/>
 
     <application
@@ -14,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VoiceBeam"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".Activity.MainActivity"
             android:exported="true">
@@ -34,6 +36,14 @@
             android:name=".Activity.AudioSendActivity"
             android:exported="true">
         </activity>
+
+        <service android:name=".Service.CheckStatusService">
+
+        </service>
+
+        <service android:name=".Service.WebSocketService">
+
+        </service>
 
         <meta-data
             android:name="preloaded_fonts"

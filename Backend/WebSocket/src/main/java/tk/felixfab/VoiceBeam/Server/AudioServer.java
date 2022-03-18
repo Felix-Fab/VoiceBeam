@@ -79,7 +79,7 @@ public class AudioServer extends WebSocketServer {
         }
 
         try {
-            HttpURLConnection con = HTTP.createDefaultConnection("http://localhost:3000/messages/add","PATCH");
+            HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","PATCH");
 
             String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
 

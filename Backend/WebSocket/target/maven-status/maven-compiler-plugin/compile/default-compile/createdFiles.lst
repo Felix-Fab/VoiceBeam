@@ -1,3 +1,7 @@
 tk\felixfab\VoiceBeam\Server\AudioServer.class
-tk\felixfab\VoiceBeam\VoiceBeam.class
 tk\felixfab\VoiceBeam\Server\ServerManager.class
+tk\felixfab\VoiceBeam\API\HTTP.class
+tk\felixfab\VoiceBeam\VoiceBeam.class
+tk\felixfab\VoiceBeam\etc\Logger.class
+tk\felixfab\VoiceBeam\etc\ConsoleColors.class
+tk\felixfab\VoiceBeam\Manager\FileManager.class

@@ -1,8 +1,12 @@
 package tk.felixfab.voicebeam.Activity;
 
 import android.content.Intent;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,13 +20,16 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
 import java.sql.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +43,7 @@ import tk.felixfab.voicebeam.Adapter.UsersAdapter;
 import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.User.UserInfos;
+import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
 
 public class AudioSendActivity extends AppCompatActivity {
 
@@ -46,6 +54,9 @@ public class AudioSendActivity extends AppCompatActivity {
     ImageView iv_pb;
     Button btn_back;
     Button btn_send;
+
+    MediaRecorder myAudioRecorder = new MediaRecorder();
+    File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + UserInfos.getUsername() + ".mp3");
 
     ArrayList<UserData> arrayList = new ArrayList<UserData>();
 
@@ -75,6 +86,51 @@ public class AudioSendActivity extends AppCompatActivity {
 
         loadUserInformation = new LoadUserInformation();
         loadUserInformation.execute();
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AudioSendActivity.this,UserMenuActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        btn_send.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == event.ACTION_DOWN){
+
+                    myAudioRecorder.setOutputFile(outputFile);
+
+                    try {
+                        myAudioRecorder.prepare();
+                        myAudioRecorder.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    try {
+                        myAudioRecorder.stop();
+                        myAudioRecorder.reset();
+
+                        String dataString = Base64.getEncoder().encodeToString(Files.readAllBytes(outputFile.toPath()));
+
+                        String json = "{ \"from\": \"" + UserInfos.getUsername() + "\", \"to:\": \"" + username + "\", \"data:\": \"" + dataString + "\"";
+
+                        WebSocketManager.ws.sendText(json);
+
+                        loadUserInformation = new LoadUserInformation();
+                        loadUserInformation.execute();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     public class LoadUserInformation extends AsyncTask<String, Integer, String> {
@@ -100,10 +156,12 @@ public class AudioSendActivity extends AppCompatActivity {
 
                     for(int i = 0;i < jsonObject.getJSONArray("messages").length();i++){
 
-                        //Date date = new Date(jsonObject.getJSONArray("messages").getJSONObject(i).get("createdAt").toString());
-                        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
 
-                        String Detail = jsonObject.getJSONArray("messages").getJSONObject(i).getString("audioLength") + " Sekunden | ";
+                        Date date = simpleDateFormat.parse(jsonObject.getJSONArray("messages").getJSONObject(i).getString("createdAt"));
+
+                        String Detail = jsonObject.getJSONArray("messages").getJSONObject(i).getString("audioLength") + " Sekunden | " + format.format(date);
 
                         if(jsonObject.getJSONArray("messages").getJSONObject(i).getString("from").equalsIgnoreCase(UserInfos.getUsername())){
                             arrayList.add(new UserData("Gesendet",Detail,true));
@@ -115,7 +173,7 @@ public class AudioSendActivity extends AppCompatActivity {
                 }
                 return "Error";
 
-            } catch (IOException | JSONException e) {
+            } catch (IOException | JSONException | ParseException e) {
                 e.printStackTrace();
             }
             return "Error";

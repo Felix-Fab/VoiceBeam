@@ -56,7 +56,7 @@ public class AudioSendActivity extends AppCompatActivity {
     Button btn_send;
 
     MediaRecorder myAudioRecorder = new MediaRecorder();
-    File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + UserInfos.getUsername() + ".mp3");
+    File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ outputAudio.mp3");
 
     ArrayList<UserData> arrayList = new ArrayList<UserData>();
 
@@ -102,6 +102,9 @@ public class AudioSendActivity extends AppCompatActivity {
 
                 if(event.getAction() == event.ACTION_DOWN){
 
+                    myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+                    myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+                    myAudioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                     myAudioRecorder.setOutputFile(outputFile);
 
                     try {
@@ -118,7 +121,7 @@ public class AudioSendActivity extends AppCompatActivity {
 
                         String dataString = Base64.getEncoder().encodeToString(Files.readAllBytes(outputFile.toPath()));
 
-                        String json = "{ \"from\": \"" + UserInfos.getUsername() + "\", \"to:\": \"" + username + "\", \"data:\": \"" + dataString + "\"";
+                        String json = "{ \"from\": \"" + UserInfos.getUsername() + "\", \"to:\": \"" + username + "\", \"data:\": \"" + dataString + "\"}";
 
                         WebSocketManager.ws.sendText(json);
 
@@ -128,7 +131,7 @@ public class AudioSendActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                return false;
+                return true;
             }
         });
     }

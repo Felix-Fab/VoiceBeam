@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     String username;
     String email;
 
+    SharedPreferences login_pref;
+
     LoginTask loginTask;
 
     @Override
@@ -62,35 +65,33 @@ public class MainActivity extends AppCompatActivity {
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
+        login_pref = getApplicationContext().getSharedPreferences("LoginSave", 0);
+
         btn_login = findViewById(R.id.btn_login);
         tf_email = findViewById(R.id.tf_email);
         tf_password = findViewById(R.id.tf_password);
+
+        if(login_pref.getString("email",null) != null && login_pref.getString("password",null) != null){
+            btn_login.setClickable(false);
+
+            loginTask = new LoginTask();
+            loginTask.execute(login_pref.getString("email",null),login_pref.getString("password",null));
+        }
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 loginTask = new LoginTask();
-                loginTask.execute();
+                loginTask.execute(tf_email.getText().toString(),tf_password.getText().toString());
             }
         });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    WebSocketManager.connectToSocket("ws://5.181.151.118:81");
-                } catch (IOException | WebSocketException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
 
         Intent CheckStatusIntent = new Intent(this, CheckStatusService.class);
         startService(CheckStatusIntent);
 
-        //Intent WebSocketIntent = new Intent(this, WebSocketService.class);
-        //startService(WebSocketIntent);
+        Intent WebSocketIntent = new Intent(this, WebSocketService.class);
+        startService(WebSocketIntent);
     }
 
     public class LoginTask extends AsyncTask<String, Integer, String> {
@@ -100,11 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-                if (tf_email.getText().length() > 0 && tf_password.length() > 0) {
+                if (strings.length >= 2) {
 
                     HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/login", "PATCH");
 
-                    String json = "{ \"email\": \"" + tf_email.getText() + "\", \"password\":\"" + tf_password.getText() + "\"}";
+                    String json = "{ \"email\": \"" + strings[0] + "\", \"password\":\"" + strings[1] + "\"}";
 
                     con.setDoOutput(false);
 
@@ -118,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
                     if(con.getResponseCode() == 200){
                         UserInfos.setUsername(jsonObject.getString("username"));
                         UserInfos.setEmail(jsonObject.getString("email"));
+
+                        SharedPreferences.Editor editor = login_pref.edit();
+                        editor.putString("email",strings[0]);
+                        editor.putString("password",strings[1]);
+                        editor.commit();
 
                         return "Success";
                     }else{
@@ -142,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
                 startActivity(intent);
-
-                Toast.ShowToast(MainActivity.this,"Login Success", android.widget.Toast.LENGTH_LONG);
+                finish();
 
             }else{
                 AlertBox.ShowDefaultAlertBox(MainActivity.this,"Error",s);
+                btn_login.setClickable(true);
             }
         }
     }

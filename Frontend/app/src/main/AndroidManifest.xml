@@ -37,12 +37,15 @@
             android:exported="true">
         </activity>
 
-        <service android:name=".Service.CheckStatusService">
+        <activity
+            android:name=".Activity.SettingsMenuActivity"
+            android:exported="true">
+        </activity>
 
+        <service android:name=".Service.CheckStatusService">
         </service>
 
         <service android:name=".Service.WebSocketService">
-
         </service>
 
         <meta-data

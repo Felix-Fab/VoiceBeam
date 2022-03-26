@@ -49,17 +49,18 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        Logger.writeInfoMessage("Client disconnected: " + webSocket.getRemoteSocketAddress());
+        Logger.writeInfoMessage("Client disconnected");
     }
 
     @Override
     protected boolean onConnect(SelectionKey key) {
-        System.out.println("Client connected");
         return true;
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
+
+        System.out.println(s);
 
         JSONObject object = new JSONObject(s);
 

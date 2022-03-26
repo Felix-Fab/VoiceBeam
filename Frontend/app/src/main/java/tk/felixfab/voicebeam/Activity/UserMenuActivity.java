@@ -33,6 +33,7 @@ import tk.felixfab.voicebeam.User.UserInfos;
 public class UserMenuActivity extends AppCompatActivity {
 
     ListView lv_users;
+    Button btn_settings;
 
     Intent intent;
 
@@ -48,6 +49,7 @@ public class UserMenuActivity extends AppCompatActivity {
         intent = getIntent();
 
         lv_users = findViewById(R.id.lv_users);
+        btn_settings = findViewById(R.id.btn_settings);
 
         userInput = new UserInput();
         userInput.execute();

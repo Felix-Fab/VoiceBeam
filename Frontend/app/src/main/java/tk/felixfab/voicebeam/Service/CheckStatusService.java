@@ -14,14 +14,12 @@ public class CheckStatusService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(UserInfos.getEmail() != null){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    checkStatusTimer.startTimer();
-                }
-            }).start();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkStatusTimer.startTimer();
+            }
+        }).start();
 
         return START_STICKY;
     }

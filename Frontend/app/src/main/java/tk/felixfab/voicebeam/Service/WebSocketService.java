@@ -10,6 +10,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 
 import java.io.IOException;
 
+import tk.felixfab.voicebeam.Timer.WebSocketTimer;
 import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
 
 public class WebSocketService extends Service {
@@ -20,11 +21,7 @@ public class WebSocketService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    WebSocketManager.connectToSocket("ws://5.181.151.118:81");
-                } catch (IOException | WebSocketException e) {
-                    e.printStackTrace();
-                }
+                WebSocketTimer.startTimer();
             }
         }).start();
 

@@ -32,35 +32,38 @@ public class checkStatusTimer {
             @Override
             public void run() {
 
-                boolean status = false;
+                if(UserInfos.getEmail() != null){
 
-                AudioManager audioManager = MainActivity.getAudioManager();
-                if (audioManager != null) {
-                    for(AudioDeviceInfo deviceInfo : audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)){
-                        if(deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADPHONES || deviceInfo.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET || deviceInfo.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
-                            status = true;
+                    boolean status = false;
+
+                    AudioManager audioManager = MainActivity.getAudioManager();
+                    if (audioManager != null) {
+                        for(AudioDeviceInfo deviceInfo : audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)){
+                            if(deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADPHONES || deviceInfo.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET || deviceInfo.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
+                                status = true;
+                            }
                         }
                     }
-                }
 
-                try {
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/status","PATCH");
+                    try {
+                        HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/status","PATCH");
 
-                    String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
+                        String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
 
-                    con.setDoOutput(false);
-                    try (OutputStream os = con.getOutputStream()) {
-                        byte[] input = json.getBytes("utf-8");
-                        os.write(input, 0, input.length);
+                        con.setDoOutput(false);
+                        try (OutputStream os = con.getOutputStream()) {
+                            byte[] input = json.getBytes("utf-8");
+                            os.write(input, 0, input.length);
+                        }
+
+                        JSONObject jsonObject = HTTP.getJSONBody(con);
+
+                        if(con.getResponseCode() != 200){
+                            Logger.writeErrorMessage("Status Change Request Error");
+                        }
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    JSONObject jsonObject = HTTP.getJSONBody(con);
-
-                    if(con.getResponseCode() != 200){
-                        Logger.writeErrorMessage("Status Change Request Error");
-                    }
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
                 }
             }
         },0,10000);

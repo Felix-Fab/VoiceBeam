@@ -11,6 +11,7 @@ import java.util.Base64;
 public class FileManager {
 
     public static void createTempFolder() throws IOException {
+        Files.delete(Paths.get("WebTemp"));
         Files.createDirectory(Paths.get("WebTemp"));
     }
 

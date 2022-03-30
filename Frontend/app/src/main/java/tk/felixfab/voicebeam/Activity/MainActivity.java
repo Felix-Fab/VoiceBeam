@@ -1,10 +1,14 @@
 package tk.felixfab.voicebeam.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +28,7 @@ import java.net.HttpURLConnection;
 import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Message.AlertBox;
 import tk.felixfab.voicebeam.Message.Toast;
+import tk.felixfab.voicebeam.Permissions.PermissionsManager;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.Service.CheckStatusService;
 import tk.felixfab.voicebeam.Service.WebSocketService;
@@ -71,19 +76,29 @@ public class MainActivity extends AppCompatActivity {
         tf_email = findViewById(R.id.tf_email);
         tf_password = findViewById(R.id.tf_password);
 
-        if(login_pref.getString("email",null) != null && login_pref.getString("password",null) != null){
-            btn_login.setClickable(false);
+        requestPermissions(new String[] { Manifest.permission.INTERNET }, 123);
 
-            loginTask = new LoginTask();
-            loginTask.execute(login_pref.getString("email",null),login_pref.getString("password",null));
+        if (ContextCompat.checkSelfPermission(
+                MainActivity.this, Manifest.permission.INTERNET) ==
+                PackageManager.PERMISSION_GRANTED) {
+        } else {
+            requestPermissions(new String[] { Manifest.permission.INTERNET }, 123);
+        }
+
+        ActivityCompat.requestPermissions(MainActivity.this,new String[] { Manifest.permission.CAMERA },123);
+
+        if(login_pref.getString("email",null) != null && login_pref.getString("password",null) != null){
+            tf_email.setText(login_pref.getString("email",null));
+            tf_password.setText(login_pref.getString("password",null));
         }
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                loginTask = new LoginTask();
-                loginTask.execute(tf_email.getText().toString(),tf_password.getText().toString());
+                if(PermissionsManager.checkPermissions(MainActivity.this,MainActivity.this)){
+                    loginTask = new LoginTask();
+                    loginTask.execute(tf_email.getText().toString(),tf_password.getText().toString());
+                }
             }
         });
 
@@ -127,6 +142,11 @@ public class MainActivity extends AppCompatActivity {
 
                         return "Success";
                     }else{
+                        SharedPreferences.Editor editor = login_pref.edit();
+                        editor.remove("email");
+                        editor.remove("password");
+                        editor.commit();
+
                         return jsonObject.getJSONArray("errors").getJSONObject(0).getString("msg");
                     }
                 }

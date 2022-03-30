@@ -117,6 +117,7 @@ public class UserAdapter implements ListAdapter {
         return false;
     }
 
+
     protected static class ViewHolder{
         TextView username;
         TextView details;

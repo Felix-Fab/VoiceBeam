@@ -121,12 +121,16 @@ public class AudioSendActivity extends AppCompatActivity {
 
                         String dataString = Base64.getEncoder().encodeToString(Files.readAllBytes(outputFile.toPath()));
 
-                        String json = "{ \"from\": \"" + UserInfos.getUsername() + "\", \"to:\": \"" + username + "\", \"data:\": \"" + dataString + "\"}";
+                        String json = "{ \"from\": \"" + UserInfos.getUsername() + "\", \"to\": \"" + username + "\", \"data\": \"" + dataString + "\"}";
 
                         WebSocketManager.ws.sendText(json);
 
+                        arrayList.clear();
+
                         loadUserInformation = new LoadUserInformation();
                         loadUserInformation.execute();
+
+                        Toast.ShowToast(AudioSendActivity.this,"Audio gesendet", android.widget.Toast.LENGTH_LONG);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

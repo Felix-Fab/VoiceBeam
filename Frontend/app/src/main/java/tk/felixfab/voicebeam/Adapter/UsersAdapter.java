@@ -75,7 +75,7 @@ public class UsersAdapter implements ListAdapter {
     }
     @Override
     public int getViewTypeCount() {
-        return arrayList.size();
+        return 1;
     }
     @Override
     public boolean isEmpty() {

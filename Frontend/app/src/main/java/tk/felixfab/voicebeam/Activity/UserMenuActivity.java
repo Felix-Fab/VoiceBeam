@@ -1,5 +1,6 @@
 package tk.felixfab.voicebeam.Activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.squareup.picasso.Picasso;
 
@@ -62,6 +64,13 @@ public class UserMenuActivity extends AppCompatActivity {
                 Intent intent = new Intent(UserMenuActivity.this, AudioSendActivity.class);
                 intent.putExtra("username",itemTitle.UserName);
                 startActivity(intent);
+            }
+        });
+
+        btn_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityCompat.requestPermissions(UserMenuActivity.this,new String[] { Manifest.permission.CAMERA },123);
             }
         });
     }

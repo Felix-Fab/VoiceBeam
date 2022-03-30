@@ -62,14 +62,16 @@
     <ListView
         android:id="@+id/lv_messages"
         android:layout_width="match_parent"
-        android:layout_height="574dp"
+        android:layout_height="564dp"
+        android:layout_above="@+id/btn_send"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="56dp"
+        android:layout_marginBottom="26dp"
         android:divider="@null"
         android:dividerHeight="10dp"
-        android:listSelector="@android:color/transparent">
-
+        android:listSelector="@android:color/transparent"
+        android:background="@drawable/audio_send_listview_border">
     </ListView>
 
     <Button

@@ -60,8 +60,6 @@ public class AudioServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket webSocket, String s) {
 
-        System.out.println(s);
-
         JSONObject object = new JSONObject(s);
 
         File file = FileManager.saveTempAudio(object.getString("data"),object.getString("from") + ".mp3");
@@ -70,17 +68,8 @@ public class AudioServer extends WebSocketServer {
         String to = object.getString("to");
         int file_duration = 0;
 
-        Encoder encoder = new Encoder();
-
-        try{
-            MultimediaInfo mi = encoder.getInfo(file);
-            file_duration = (int) (mi.getDuration() / 1000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         try {
-            HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","PATCH");
+            HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","POST");
 
             String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
 
@@ -89,7 +78,6 @@ public class AudioServer extends WebSocketServer {
                 byte[] input = json.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
-            con.connect();
 
             switch (con.getResponseCode()){
 

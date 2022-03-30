@@ -5,7 +5,7 @@ import User from "../models/user.js";
 
 const router = Router();
 
-router.patch("/add",notAuthenticated,
+router.post("/add",notAuthenticated,
     check("from")
         .isLength({min: 1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -91,6 +91,24 @@ async (req, res) => {
 
     return res.status(200).json({
         messages: Messages
+    });
+});
+
+router.delete("/removeMessages",notAuthenticated,
+async(req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
+    Message.deleteMany({}, function ( err ) {
+
+    });
+
+    return res.status(200).json({
+        message: "All Messages deleted"
     });
 });
 

@@ -35,27 +35,34 @@ public class WebSocketListener extends WebSocketAdapter {
     public void onTextMessage(WebSocket websocket, String text) throws Exception {
         WebSocketManager.setConnection(true);
 
+        System.out.println("Nachricht erhalten");
+
         JSONObject object = new JSONObject(text);
 
-        if(object.getString("to").equalsIgnoreCase(UserInfos.username)){
+        if(object.getString("key").equalsIgnoreCase("message")){
 
-            File inputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + object.getString("from") + "_Cache.mp3");
+            if(object.getString("to").equalsIgnoreCase(UserInfos.username)){
 
-            byte[] bytes = Base64.getDecoder().decode(object.getString("data"));
+                File inputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + object.getString("from") + "_Cache.mp3");
 
-            try(FileOutputStream fos = new FileOutputStream(inputFile)){
-                fos.write(bytes);
-            }
+                byte[] bytes = Base64.getDecoder().decode(object.getString("data"));
 
-            if(mediaPlayer.isPlaying()){
-                Playlist.add(inputFile);
-            }else{
-                mediaPlayer.setDataSource(inputFile.getPath());
+                try(FileOutputStream fos = new FileOutputStream(inputFile)){
+                    fos.write(bytes);
+                }
 
-                mediaPlayer.prepare();
-                mediaPlayer.start();
+                System.out.println("Spiele Nachricht!");
 
-                inputFile.deleteOnExit();
+                if(mediaPlayer.isPlaying()){
+                    Playlist.add(inputFile);
+                }else{
+                    mediaPlayer.setDataSource(inputFile.getPath());
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+
+                    inputFile.deleteOnExit();
+                }
             }
         }
     }

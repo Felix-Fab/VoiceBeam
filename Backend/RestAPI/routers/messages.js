@@ -22,14 +22,13 @@ router.post("/add",notAuthenticated,
 async (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(400).json({
+        return res.status(401).json({
             errors: errors.array()
         });
     }
 
     const User1 = await User.findOne({username: req.body.from});
     const User2 = await User.findOne({username: req.body.to})
-
 
     if(!User1 || !User2){
         return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});

@@ -30,11 +30,15 @@ public class WebSocketTimer {
             @Override
             public void run() {
 
-                if (!WebSocketManager.isConnected()) {
-                    try {
-                        WebSocketManager.connect("ws://5.181.151.118:81");
-                    } catch (IOException | WebSocketException e) {
-                        e.printStackTrace();
+                if(UserInfos.getEmail() != null){
+
+                    if (!WebSocketManager.isConnected()) {
+                        try {
+                            WebSocketManager.connect("ws://5.181.151.118:81");
+                            WebSocketManager.ws.sendText("{\"key\": \"register\", \"username\": \"" + UserInfos.getUsername() + "\" }");
+                        } catch (IOException | WebSocketException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

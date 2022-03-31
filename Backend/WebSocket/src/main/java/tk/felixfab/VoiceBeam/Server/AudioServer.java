@@ -4,6 +4,7 @@ import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.InputFormatException;
 import it.sauronsoftware.jave.MultimediaInfo;
+import jdk.jpackage.internal.Log;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -25,10 +26,12 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AudioServer extends WebSocketServer {
+
+    HashMap<String,WebSocket>Clients = new HashMap<>();
 
     public AudioServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -44,12 +47,20 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        Logger.writeInfoMessage("Client connected: " + webSocket.getRemoteSocketAddress());
+        Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        Logger.writeInfoMessage("Client disconnected");
+
+        for (Map.Entry<String, WebSocket> set : Clients.entrySet()) {
+            if(set.getValue() == webSocket){
+                Logger.writeInfoMessage("[onClose] " + set.getKey() + " disconnected!");
+                Clients.remove(set.getKey());
+                return;
+            }
+        }
+        Logger.writeWarningMessage("[onClose] Unknown disconnected");
     }
 
     @Override
@@ -62,48 +73,80 @@ public class AudioServer extends WebSocketServer {
 
         JSONObject object = new JSONObject(s);
 
-        File file = FileManager.saveTempAudio(object.getString("data"),object.getString("from") + ".mp3");
+        switch (object.getString("key")){
+            case "register":
+                Clients.put(object.getString("username"),webSocket);
+                Logger.writeSuccessMessage("[onMessage-Register]  " + object.getString("username") + " registered");
+                break;
 
-        String from = object.getString("from");
-        String to = object.getString("to");
-        int file_duration = 0;
+            case "message":
+                File file = FileManager.saveTempAudio(object.getString("data"),object.getString("from") + ".mp3");
 
-        try {
-            HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","POST");
+                String from = object.getString("from");
+                String to = object.getString("to");
+                int file_duration = 0;
 
-            String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
+                if(Clients.containsKey(object.getString("to"))){
 
-            con.setDoOutput(true);
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = json.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
+                    try {
+                        HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","POST");
 
-            switch (con.getResponseCode()){
+                        String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
 
-                case 400:
-                    Logger.writeErrorMessage("Message Add Request Error | Code 400");
-                    break;
+                        con.setDoOutput(true);
+                        try (OutputStream os = con.getOutputStream()) {
+                            byte[] input = json.getBytes("utf-8");
+                            os.write(input, 0, input.length);
+                        }
 
-                case 201:
-                    Logger.writeSuccessMessage("Message Add | Code 201");
-                    break;
+                        switch (con.getResponseCode()){
 
-            }
+                            case 401:
+                                Logger.writeErrorMessage("[onMessage/Message] Message Add Request Error | Code 400");
+                                break;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                            case 201:
+                                Logger.writeSuccessMessage("[onMessage/Message] Message Add | Code 201");
+                                break;
+
+                            default:
+                                Logger.writeErrorMessage("[onMessage/Message] Message Add Request Error | Code " + con.getResponseCode());
+                                break;
+                        }
+
+                        Clients.get(object.getString("to")).send(s);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Logger.writeWarningMessage("[onMessage] Recipient User not registerd");
+                }
+                break;
+
+            default:
+                Logger.writeWarningMessage("[onMessage] " + object.getString("key") + "| Key not defined");
+                break;
         }
     }
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        Logger.writeErrorMessage(e.getMessage());
+
+        for (Map.Entry<String, WebSocket> set : Clients.entrySet()) {
+            if(set.getValue() == webSocket){
+                Logger.writeErrorMessage("[onError] " + set.getKey() + " Error!");
+                Clients.remove(set.getKey());
+                return;
+            }
+        }
+        Logger.writeErrorMessage("[onError] Unknown User Error");
+
     }
 
     @Override
     public void onStart() {
-        Logger.writeSuccessMessage("AudioServer started");
+        Logger.writeSuccessMessage("[onStart] AudioServer started");
     }
 }
 

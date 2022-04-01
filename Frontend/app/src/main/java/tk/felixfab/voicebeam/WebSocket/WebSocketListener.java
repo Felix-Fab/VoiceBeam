@@ -35,8 +35,6 @@ public class WebSocketListener extends WebSocketAdapter {
     public void onTextMessage(WebSocket websocket, String text) throws Exception {
         WebSocketManager.setConnection(true);
 
-        System.out.println("Nachricht erhalten");
-
         JSONObject object = new JSONObject(text);
 
         if(object.getString("key").equalsIgnoreCase("message")){
@@ -50,8 +48,6 @@ public class WebSocketListener extends WebSocketAdapter {
                 try(FileOutputStream fos = new FileOutputStream(inputFile)){
                     fos.write(bytes);
                 }
-
-                System.out.println("Spiele Nachricht!");
 
                 if(mediaPlayer.isPlaying()){
                     Playlist.add(inputFile);
@@ -74,6 +70,8 @@ public class WebSocketListener extends WebSocketAdapter {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
+
+                mediaPlayer.reset();
                 try {
                     if(Playlist.size() > 0){
                         mediaPlayer.setDataSource(Playlist.get(0).getPath());

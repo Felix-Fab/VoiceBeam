@@ -34,8 +34,6 @@ public class HTTP {
             response = responseString.toString();
         }
 
-        System.out.println(response);
-
         return new JSONObject(response);
     }
 

@@ -55,6 +55,8 @@ public class AudioSendActivity extends AppCompatActivity {
     Button btn_back;
     Button btn_send;
 
+    UserAdapter userAdapter;
+
     MediaRecorder myAudioRecorder = new MediaRecorder();
     File outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ outputAudio.mp3");
 
@@ -189,7 +191,7 @@ public class AudioSendActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if(s.equals("Success")){
-                UserAdapter userAdapter = new UserAdapter(AudioSendActivity.this,arrayList);
+                userAdapter = new UserAdapter(AudioSendActivity.this,arrayList);
                 lv_messages.setAdapter(userAdapter);
             }else{
                 Toast.ShowToast(AudioSendActivity.this,s, android.widget.Toast.LENGTH_LONG);

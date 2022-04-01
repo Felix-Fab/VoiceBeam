@@ -3,10 +3,12 @@ package tk.felixfab.voicebeam.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -107,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
 
         Intent WebSocketIntent = new Intent(this, WebSocketService.class);
         startService(WebSocketIntent);
+
+        
+
+        this.sendBroadcast(WebSocketIntent);
     }
 
     public class LoginTask extends AsyncTask<String, Integer, String> {

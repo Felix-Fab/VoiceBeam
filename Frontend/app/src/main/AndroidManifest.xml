@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VoiceBeam"
         android:usesCleartextTraffic="true"
+        android:launchMode="singleTop"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".Activity.MainActivity"
@@ -45,7 +46,9 @@
         <service android:name=".Service.CheckStatusService">
         </service>
 
-        <service android:name=".Service.WebSocketService">
+        <service android:name=".Service.WebSocketService"
+            android:enabled="true"
+            android:exported="true">
         </service>
 
         <meta-data

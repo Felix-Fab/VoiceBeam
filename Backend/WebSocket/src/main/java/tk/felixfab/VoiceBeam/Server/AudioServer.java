@@ -4,7 +4,6 @@ import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.InputFormatException;
 import it.sauronsoftware.jave.MultimediaInfo;
-import jdk.jpackage.internal.Log;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -47,7 +46,13 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
+
+        if(clientHandshake.getFieldValue("key").equals("q4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D")){
+            Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
+        }else{
+            webSocket.close();
+            Logger.writeWarningMessage("[onOpen] Client not authenticated");
+        }
     }
 
     @Override
@@ -89,7 +94,7 @@ public class AudioServer extends WebSocketServer {
                 if(Clients.containsKey(object.getString("to"))){
 
                     try {
-                        HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/add","POST");
+                        HttpURLConnection con = HTTP.createDefaultConnection("http://37.114.34.153:3000/messages/add","POST");
 
                         String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
 

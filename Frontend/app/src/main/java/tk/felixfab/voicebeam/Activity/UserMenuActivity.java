@@ -78,7 +78,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
             while (isFinishing() != true && isDestroyed() != true){
                 try {
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/getUsers", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/manager/getUsers", "PATCH");
 
                     String json = "{ \"email\": \"" + UserInfos.getEmail() + "\"}";
 
@@ -92,6 +92,7 @@ public class UserMenuActivity extends AppCompatActivity {
                     JSONObject jsonObject = HTTP.getJSONBody(con);
 
                     arrayList.clear();
+
                     for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
                         arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
                     }

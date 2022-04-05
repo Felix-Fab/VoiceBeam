@@ -1,54 +1,49 @@
 package tk.felixfab.voicebeam.Service;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.neovisionaries.ws.client.WebSocketException;
 
 import java.io.IOException;
 
-import tk.felixfab.voicebeam.Timer.WebSocketTimer;
+import tk.felixfab.voicebeam.Activity.MainActivity;
 import tk.felixfab.voicebeam.User.UserInfos;
 import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
 
-public class WebSocketService extends Service {
+public class WebSocketService extends JobService {
+
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public boolean onStartJob(JobParameters params) {
 
-        Handler handler = new Handler();
-        Runnable mhandlerTaskRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if(UserInfos.getEmail() != null){
-
-                    if (!WebSocketManager.isConnected()) {
-                        try {
-                            WebSocketManager.connect("ws://5.181.151.118:81");
-                            WebSocketManager.ws.sendText("{\"key\": \"register\", \"username\": \"" + UserInfos.getUsername() + "\" }");
-                        } catch (IOException | WebSocketException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        WebSocketManager.ws.sendText("Hallo");
+        if(!WebSocketManager.isConnected()){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        WebSocketManager.connect("ws://" + MainActivity.Host + ":81");
+                        WebSocketManager.ws.sendText("{\"key\": \"register\", \"username\": \"" + UserInfos.getUsername() + "\" }");
+                    } catch (IOException | WebSocketException e) {
+                        e.printStackTrace();
                     }
                 }
-            }
-        };
+            }).start();
+        }
 
-        handler.postDelayed(mhandlerTaskRunnable,1000);
-        mhandlerTaskRunnable.run();
-
-        return START_STICKY;
+        return true;
     }
 
-    @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public boolean onStopJob(JobParameters params) {
+        return false;
     }
 }

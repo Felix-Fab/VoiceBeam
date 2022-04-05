@@ -6,12 +6,16 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static AudioManager audioManager;
+
+    public static String Host = "37.114.34.153";
 
     public static AudioManager getAudioManager(){
         return audioManager;
@@ -106,13 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent CheckStatusIntent = new Intent(this, CheckStatusService.class);
         startService(CheckStatusIntent);
-
-        Intent WebSocketIntent = new Intent(this, WebSocketService.class);
-        startService(WebSocketIntent);
-
-        
-
-        this.sendBroadcast(WebSocketIntent);
     }
 
     public class LoginTask extends AsyncTask<String, Integer, String> {
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (strings.length >= 2) {
 
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://5.181.151.118:3000/manager/login", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/manager/login", "PATCH");
 
                     String json = "{ \"email\": \"" + strings[0] + "\", \"password\":\"" + strings[1] + "\"}";
 
@@ -174,6 +173,17 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
                 startActivity(intent);
+
+                ComponentName componentName = new ComponentName(MainActivity.this,WebSocketService.class);
+                JobInfo info = new JobInfo.Builder(1,componentName)
+                        .setRequiresCharging(false)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPersisted(false)
+                        .build();
+
+                JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                int resultCode = scheduler.schedule(info);
+
                 finish();
 
             }else{

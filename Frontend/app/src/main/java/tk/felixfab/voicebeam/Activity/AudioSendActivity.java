@@ -5,6 +5,7 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -132,6 +133,15 @@ public class AudioSendActivity extends AppCompatActivity {
                         loadUserInformation = new LoadUserInformation();
                         loadUserInformation.execute();
 
+
+                        btn_send.setEnabled(false);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                btn_send.setEnabled(true);
+                            }
+                        },500);
+
                         Toast.ShowToast(AudioSendActivity.this,"Audio gesendet", android.widget.Toast.LENGTH_LONG);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -149,7 +159,7 @@ public class AudioSendActivity extends AppCompatActivity {
 
             HttpURLConnection con = null;
             try {
-                con = HTTP.createDefaultConnection("http://5.181.151.118:3000/messages/getMessages", "PATCH");
+                con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/messages/getMessages", "PATCH");
 
                 String json = "{ \"username1\": \"" + UserInfos.getUsername() + "\", \"username2\": \"" + username + "\" }";
 

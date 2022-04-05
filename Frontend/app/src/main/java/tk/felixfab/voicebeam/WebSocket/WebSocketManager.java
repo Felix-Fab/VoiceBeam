@@ -18,6 +18,8 @@ public class WebSocketManager {
 
         ws.addListener(new WebSocketListener());
 
+        ws.addHeader("key","q4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D");
+
         ws.connect();
     }
 

@@ -3,19 +3,13 @@ package tk.felixfab.voicebeam.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -23,24 +17,20 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketException;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Message.AlertBox;
-import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.Permissions.PermissionsManager;
 import tk.felixfab.voicebeam.R;
-import tk.felixfab.voicebeam.Service.CheckStatusService;
-import tk.felixfab.voicebeam.Service.WebSocketService;
+import tk.felixfab.voicebeam.Service.DefaultService;
 import tk.felixfab.voicebeam.Timer.checkStatusTimer;
 import tk.felixfab.voicebeam.User.UserInfos;
-import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
+import tk.felixfab.voicebeam.etc.Var;
 
 public class MainActivity extends AppCompatActivity {
     public static Context context;
@@ -50,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static AudioManager audioManager;
-
-    public static String Host = "37.114.34.153";
 
     public static AudioManager getAudioManager(){
         return audioManager;
@@ -109,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Intent CheckStatusIntent = new Intent(this, CheckStatusService.class);
-        startService(CheckStatusIntent);
     }
 
     public class LoginTask extends AsyncTask<String, Integer, String> {
@@ -123,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (strings.length >= 2) {
 
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/manager/login", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/login", "PATCH");
 
                     String json = "{ \"email\": \"" + strings[0] + "\", \"password\":\"" + strings[1] + "\"}";
 
@@ -171,18 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
                 checkStatusTimer.startTimer();
 
-                Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
-                startActivity(intent);
+                Intent UserMenuActivity = new Intent(MainActivity.this, UserMenuActivity.class);
+                startActivity(UserMenuActivity);
 
-                ComponentName componentName = new ComponentName(MainActivity.this,WebSocketService.class);
-                JobInfo info = new JobInfo.Builder(1,componentName)
-                        .setRequiresCharging(false)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPersisted(false)
-                        .build();
-
-                JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                int resultCode = scheduler.schedule(info);
+                Intent DefaultService = new Intent(MainActivity.this, DefaultService.class);
+                startService(DefaultService);
 
                 finish();
 

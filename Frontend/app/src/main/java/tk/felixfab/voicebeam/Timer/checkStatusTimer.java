@@ -21,6 +21,7 @@ import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Activity.MainActivity;
 import tk.felixfab.voicebeam.User.UserInfos;
 import tk.felixfab.voicebeam.etc.Logger;
+import tk.felixfab.voicebeam.etc.Var;
 
 public class checkStatusTimer {
 
@@ -46,7 +47,7 @@ public class checkStatusTimer {
                     }
 
                     try {
-                        HttpURLConnection con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/manager/status","PATCH");
+                        HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status","PATCH");
 
                         String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
 

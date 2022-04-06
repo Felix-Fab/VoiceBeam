@@ -45,6 +45,7 @@ import tk.felixfab.voicebeam.Message.Toast;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.User.UserInfos;
 import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
+import tk.felixfab.voicebeam.etc.Var;
 
 public class AudioSendActivity extends AppCompatActivity {
 
@@ -159,7 +160,7 @@ public class AudioSendActivity extends AppCompatActivity {
 
             HttpURLConnection con = null;
             try {
-                con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/messages/getMessages", "PATCH");
+                con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/messages/getMessages", "PATCH");
 
                 String json = "{ \"username1\": \"" + UserInfos.getUsername() + "\", \"username2\": \"" + username + "\" }";
 

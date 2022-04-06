@@ -24,6 +24,7 @@ import tk.felixfab.voicebeam.Adapter.UsersAdapter;
 import tk.felixfab.voicebeam.Adapter.Data.UsersData;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.User.UserInfos;
+import tk.felixfab.voicebeam.etc.Var;
 
 public class UserMenuActivity extends AppCompatActivity {
 
@@ -78,7 +79,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
             while (isFinishing() != true && isDestroyed() != true){
                 try {
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + MainActivity.Host + ":3000/manager/getUsers", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/getUsers", "PATCH");
 
                     String json = "{ \"email\": \"" + UserInfos.getEmail() + "\"}";
 
@@ -93,8 +94,10 @@ public class UserMenuActivity extends AppCompatActivity {
 
                     arrayList.clear();
 
-                    for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
-                        arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
+                    if(jsonObject.getJSONArray("users").length() > 0){
+                        for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
+                            arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
+                        }
                     }
 
                     if(con.getResponseCode() == 200){

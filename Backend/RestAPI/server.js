@@ -6,6 +6,7 @@ import Messages from "./routers/messages.js";
 
 const PORT = 3000;
 const DBURL = "mongodb://admin:Cstrike1@localhost:27017/voicebeam?authSource=admin";
+export const ACCESS_TOKEN_SECRET = "Security"
 export const SALTROUNDS = 10;
 
 await mongoose.connect(DBURL).then(() => console.log(`Connetect to DB "${DBURL}"!`));

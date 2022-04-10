@@ -24,11 +24,15 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
+    accessToken:{
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         required: false,
         default: Date.now()
-    }    
+    },
 })
 
 export default mongoose.model("User", userSchema);

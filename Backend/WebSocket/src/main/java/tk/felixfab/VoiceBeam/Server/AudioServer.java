@@ -1,5 +1,10 @@
 package tk.felixfab.VoiceBeam.Server;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.InputFormatException;
@@ -31,6 +36,7 @@ import java.util.stream.Collectors;
 public class AudioServer extends WebSocketServer {
 
     HashMap<String,WebSocket>Clients = new HashMap<>();
+    List<Integer> hallo = new ArrayList<>();
 
     public AudioServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -46,9 +52,31 @@ public class AudioServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-
         if(clientHandshake.getFieldValue("key").equals("q4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D")){
-            Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
+
+            try {
+                HttpURLConnection con = HTTP.createDefaultConnection("http://37.114.34.153:3000/checkAccessToken","POST");
+
+                con.addRequestProperty("authorization","Bearer " + clientHandshake.getFieldValue("accessToken"));
+
+                switch (con.getResponseCode()){
+                    case 200:
+                        Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
+                        break;
+
+                    case 401:
+                        Logger.writeWarningMessage("[onOpen] Not Authorized!");
+                        webSocket.close();
+                        break;
+
+                    case 403:
+                        Logger.writeWarningMessage("[onOpen] Access Token Invalid or Expired!");
+                        webSocket.close();
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else{
             webSocket.close();
             Logger.writeWarningMessage("[onOpen] Client not authenticated");

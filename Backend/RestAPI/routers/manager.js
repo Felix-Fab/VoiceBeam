@@ -1,8 +1,9 @@
 import {Router} from "express";
 import { check, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import { SALTROUNDS } from "../server.js";
+import { SALTROUNDS,ACCESS_TOKEN_SECRET } from "../server.js";
 import User from "../models/user.js";
+import jwt from "jsonwebtoken"
 
 const router = Router();
 
@@ -75,13 +76,14 @@ async (req, res) => {
         return res.status(401).json({ errors: [{ msg: "Invalid Credentials!"}] });
     }
 
+    const accessToken = jwt.sign({ _id: foundUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+
     return res.status(200).json({
         username: foundUser.username,
-        email: foundUser.email
+        email: foundUser.email,
+        accessToken: accessToken,
     });
 });
-
-
 
 router.patch("/status",notAuthenticated,
     check("email")
@@ -142,7 +144,30 @@ async(req,res) => {
     return res.status(200).json({
         users: Users
     });
-});      
+});
+
+router.patch("/checkAccessToken",authenticateToken, (req, res) => {
+    return res.json({
+        username: req.user.username,
+        email: req.user.email
+    }).status(200);
+});
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) return res.status(401).json({ info: "Not Authorized!" });
+
+    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, tokenData) => {
+        if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
+        req.user = await User.findOne({ _id: tokenData._id });
+
+        const foundTokenPair = req.user.accessTokens.find(tokenPair => tokenPair.accessToken === token);
+        if (!foundTokenPair.valid) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
+
+        next();
+    });
+}
 
 function notAuthenticated(req, res, next) {
     const authHeader = req.headers["authorization"];

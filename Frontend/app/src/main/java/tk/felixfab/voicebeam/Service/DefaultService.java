@@ -15,11 +15,17 @@ import androidx.core.app.NotificationCompat;
 
 import com.neovisionaries.ws.client.WebSocketException;
 
-import java.io.IOException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+
+import tk.felixfab.voicebeam.API.HTTP;
 import tk.felixfab.voicebeam.Activity.MainActivity;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.Timer.checkStatusTimer;
+import tk.felixfab.voicebeam.Timer.checkWebSocketConnectionTimer;
 import tk.felixfab.voicebeam.User.UserInfos;
 import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
 import tk.felixfab.voicebeam.etc.Var;
@@ -49,14 +55,7 @@ public class DefaultService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if(!WebSocketManager.isConnected()){
-                        WebSocketManager.connect("ws://" + Var.Host + ":81");
-                        WebSocketManager.ws.sendText("{\"key\": \"register\", \"username\": \"" + UserInfos.getUsername() + "\" }");
-                    }
-                } catch (IOException | WebSocketException e) {
-                    e.printStackTrace();
-                }
+                checkWebSocketConnectionTimer.startTimer();
             }
         }).start();
 
@@ -72,7 +71,24 @@ public class DefaultService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+
+        /*try {
+            con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/login", "PATCH");
+
+            String json = "{ \"email\": \"" +  + "\", \"password\":\"" + strings[1] + "\"}";
+
+            con.setDoOutput(false);
+
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = json.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            JSONObject jsonObject = HTTP.getJSONBody(con);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
     }
 
     @Nullable

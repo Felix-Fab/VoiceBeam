@@ -9,12 +9,14 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.neovisionaries.ws.client.WebSocketException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -28,6 +30,7 @@ import tk.felixfab.voicebeam.Timer.checkStatusTimer;
 import tk.felixfab.voicebeam.Timer.checkWebSocketConnectionTimer;
 import tk.felixfab.voicebeam.User.UserInfos;
 import tk.felixfab.voicebeam.WebSocket.WebSocketManager;
+import tk.felixfab.voicebeam.etc.Logger;
 import tk.felixfab.voicebeam.etc.Var;
 
 public class DefaultService extends Service {
@@ -72,23 +75,30 @@ public class DefaultService extends Service {
     @Override
     public void onDestroy() {
 
-        /*try {
-            con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/login", "PATCH");
+        try {
+            HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status", "PATCH");
 
-            String json = "{ \"email\": \"" +  + "\", \"password\":\"" + strings[1] + "\"}";
+            con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 
             con.setDoOutput(false);
+            con.connect();
 
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = json.getBytes("utf-8");
-                os.write(input, 0, input.length);
+            switch (con.getResponseCode()){
+                case 200:
+                    Logger.writeSuccessMessage("Service destroy logout Code 200");
+                break;
+
+                case 401:
+                    Logger.writeWarningMessage("Service destroy logout Code 401");
+                break;
+
+                case 403:
+                    Logger.writeWarningMessage("Service destroy logout Code 403");
+                break;
             }
-
-            JSONObject jsonObject = HTTP.getJSONBody(con);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-
+        }
     }
 
     @Nullable

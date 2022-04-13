@@ -20,7 +20,6 @@ public class checkWebSocketConnectionTimer {
                 try{
                     if(!WebSocketManager.isConnected()){
                         WebSocketManager.connect("ws://" + Var.Host + ":81");
-                        WebSocketManager.ws.sendText("{\"key\": \"register\", \"username\": \"" + UserInfos.getUsername() + "\" }");
                     }
                 }catch (Exception e){
                     e.printStackTrace();

@@ -5,7 +5,7 @@ import User from "../models/user.js";
 
 const router = Router();
 
-router.post("/add",notAuthenticated,
+router.post("/add",authenticateToken,
     check("from")
         .isLength({min: 1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -45,7 +45,7 @@ async (req,res) => {
     return res.status(201).json({info: 'Message has been successfully created!'});
 });   
 
-router.patch("/getMessages",notAuthenticated,
+router.patch("/getMessages",authenticateToken,
     check("username1")
         .isLength({min: 1})
             .withMessage("Username1 has to be at least 1 Character long!")
@@ -93,14 +93,7 @@ async (req, res) => {
     });
 });
 
-router.delete("/removeMessages",notAuthenticated,
-async(req,res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
+router.delete("/removeMessages",authenticateToken, (req,res) => {
 
     Message.deleteMany({}, function ( err ) {
 
@@ -111,6 +104,18 @@ async(req,res) => {
     });
 });
 
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) return res.status(401).json({ info: "Not Authorized!" });
+
+    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, tokenData) => {
+        if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
+        req.user = await User.findOne({ _id: tokenData._id });
+
+        next();
+    });
+}
 
 function notAuthenticated(req, res, next) {
     const authHeader = req.headers["authorization"];

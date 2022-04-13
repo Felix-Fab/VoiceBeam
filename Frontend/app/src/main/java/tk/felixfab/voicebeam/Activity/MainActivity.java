@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     if(con.getResponseCode() == 200){
                         UserInfos.setUsername(jsonObject.getString("username"));
                         UserInfos.setEmail(jsonObject.getString("email"));
+                        UserInfos.setAccessToken(jsonObject.getString("accessToken"));
 
                         SharedPreferences.Editor editor = login_pref.edit();
                         editor.putString("email",strings[0]);

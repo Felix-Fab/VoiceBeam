@@ -59,9 +59,13 @@ public class AudioServer extends WebSocketServer {
 
                 con.addRequestProperty("authorization","Bearer " + clientHandshake.getFieldValue("accessToken"));
 
+                JSONObject jsonObject = HTTP.getJSONBody(con);
+
                 switch (con.getResponseCode()){
                     case 200:
-                        Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress());
+                        Clients.put(jsonObject.getString("username"),webSocket);
+
+                        Logger.writeInfoMessage("[onOpen] Client connected: " + webSocket.getRemoteSocketAddress() + " | " + jsonObject.getString("username"));
                         break;
 
                     case 401:
@@ -107,22 +111,19 @@ public class AudioServer extends WebSocketServer {
         JSONObject object = new JSONObject(s);
 
         switch (object.getString("key")){
-            case "register":
-                Clients.put(object.getString("username"),webSocket);
-                Logger.writeSuccessMessage("[onMessage-Register]  " + object.getString("username") + " registered");
-                break;
-
             case "message":
                 File file = FileManager.saveTempAudio(object.getString("data"),object.getString("from") + ".mp3");
 
                 String from = object.getString("from");
                 String to = object.getString("to");
+                String accessToken = object.getString("accessToken");
                 int file_duration = 0;
 
                 if(Clients.containsKey(object.getString("to"))){
 
                     try {
                         HttpURLConnection con = HTTP.createDefaultConnection("http://37.114.34.153:3000/messages/add","POST");
+                        con.addRequestProperty("authorization","Bearer " + accessToken);
 
                         String json = "{ \"from\": \"" + from + "\", \"to\":\"" + to + "\", \"audioLength\": \"" + file_duration + "\"}";
 

@@ -78,6 +78,8 @@ async (req, res) => {
 
     const accessToken = jwt.sign({ _id: foundUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
 
+    await User.updateOne({ email: req.body.email}, { accessToken: accessToken });
+
     return res.status(200).json({
         username: foundUser.username,
         email: foundUser.email,
@@ -85,32 +87,12 @@ async (req, res) => {
     });
 });
 
-router.patch("/status",notAuthenticated,
-    check("email")
-        .isEmail()
-            .withMessage("Please provide a valid Email!")
-        .isLength({ max: 254 })
-            .withMessage("Email cannot be longer that 254 Characters!"),
-    check("status")
-        .isBoolean(true) 
-            .withMessage("Status must be a Boolean!"),
-async (req, res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
-
-    const foundUser = await User.findOne({email: req.body.email});
-
-    if(!foundUser){
-        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
-    }
+router.patch("/status",authenticateToken, (req, res) => {
+    const foundUser = req.user;
     
     foundUser.status = req.body.status;
 
-     await foundUser.save();
+    await foundUser.save();
 
      return res.status(200).json({
          username: foundUser.username,
@@ -119,27 +101,8 @@ async (req, res) => {
      });
 });
 
-router.patch("/getUsers",notAuthenticated,
-    check("email")
-        .isEmail()
-            .withMessage("Please provide a valid Email!")
-        .isLength({max: 254})
-            .withMessage("Email cannot be longer than 254 Characters!"),
-async(req,res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
-
-    const foundUser = await User.findOne({email: req.body.email});
-
-    if(!foundUser){
-        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
-    }
-
-    const Users = await User.find({status: true, username: { $ne: foundUser.username } },"username").exec();
+router.patch("/getUsers",authenticateToken, (req,res) => {
+    const Users = await User.find({status: true, username: { $ne: req.user.username } },"username").exec();
 
     return res.status(200).json({
         users: Users
@@ -161,9 +124,6 @@ function authenticateToken(req, res, next) {
     jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, tokenData) => {
         if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
         req.user = await User.findOne({ _id: tokenData._id });
-
-        const foundTokenPair = req.user.accessTokens.find(tokenPair => tokenPair.accessToken === token);
-        if (!foundTokenPair.valid) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
 
         next();
     });

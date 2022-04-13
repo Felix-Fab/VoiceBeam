@@ -80,15 +80,10 @@ public class UserMenuActivity extends AppCompatActivity {
             while (isFinishing() != true && isDestroyed() != true){
                 try {
                     HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/getUsers", "PATCH");
-
-                    String json = "{ \"email\": \"" + UserInfos.getEmail() + "\"}";
+                    con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 
                     con.setDoOutput(false);
-
-                    try (OutputStream os = con.getOutputStream()) {
-                        byte[] input = json.getBytes("utf-8");
-                        os.write(input, 0, input.length);
-                    }
+                    con.connect();
 
                     JSONObject jsonObject = HTTP.getJSONBody(con);
 

@@ -1,20 +1,22 @@
 package tk.felixfab.voicebeam.etc;
 
+import android.util.Log;
+
 public class Logger {
 
     public static void writeInfoMessage(String message){
-        System.out.println(ConsoleColors.RESET + "[Info] " + message);
+        Log.i("[Info]",message);
     }
 
     public static void writeWarningMessage(String message){
-        System.out.println(ConsoleColors.RESET + "[" + ConsoleColors.YELLOW + "Warning" + ConsoleColors.RESET + "] " + message);
+        Log.w("[Warning]",message);
     }
 
     public static void writeErrorMessage(String message){
-        System.out.println(ConsoleColors.RESET + "[" + ConsoleColors.RED + "Error" + ConsoleColors.RESET + "] " + ConsoleColors.RED_BACKGROUND + message + ConsoleColors.RESET);
+        Log.e("[Error]",message);
     }
 
     public static void writeSuccessMessage(String message){
-        System.out.println(ConsoleColors.RESET + "[" + ConsoleColors.GREEN + "Success" + ConsoleColors.RESET + "] " + message);
+        Log.i("[Info]",message);
     }
 }

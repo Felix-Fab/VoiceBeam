@@ -49,7 +49,7 @@ public class checkStatusTimer {
                     try {
                         HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status","PATCH");
 
-                        String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
+                        String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"accessToken\":\"" + UserInfos.getAccessToken() + "\", \"status\": " + status + " }";
 
                         con.setDoOutput(false);
                         try (OutputStream os = con.getOutputStream()) {

@@ -161,6 +161,7 @@ public class AudioSendActivity extends AppCompatActivity {
             HttpURLConnection con = null;
             try {
                 con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/messages/getMessages", "PATCH");
+                con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 
                 String json = "{ \"username1\": \"" + UserInfos.getUsername() + "\", \"username2\": \"" + username + "\" }";
 

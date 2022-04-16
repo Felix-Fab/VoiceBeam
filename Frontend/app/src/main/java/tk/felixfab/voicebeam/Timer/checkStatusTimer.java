@@ -49,7 +49,8 @@ public class checkStatusTimer {
                     try {
                         HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status","PATCH");
 
-                        String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"accessToken\":\"" + UserInfos.getAccessToken() + "\", \"status\": " + status + " }";
+                        String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
+                        con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 
                         con.setDoOutput(false);
                         try (OutputStream os = con.getOutputStream()) {
@@ -60,7 +61,7 @@ public class checkStatusTimer {
                         JSONObject jsonObject = HTTP.getJSONBody(con);
 
                         if(con.getResponseCode() != 200){
-                            Logger.writeErrorMessage("Status Change Request Error");
+                            Logger.writeErrorMessage("Status Change Request Error | " + con.getResponseCode());
                         }
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();

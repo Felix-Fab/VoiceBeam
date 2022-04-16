@@ -55,7 +55,7 @@ public class AudioServer extends WebSocketServer {
         if(clientHandshake.getFieldValue("key").equals("q4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D")){
 
             try {
-                HttpURLConnection con = HTTP.createDefaultConnection("http://37.114.34.153:3000/checkAccessToken","POST");
+                HttpURLConnection con = HTTP.createDefaultConnection("http://37.114.34.153:3000/manager/checkAccessToken","GET");
 
                 con.addRequestProperty("authorization","Bearer " + clientHandshake.getFieldValue("accessToken"));
 
@@ -76,6 +76,10 @@ public class AudioServer extends WebSocketServer {
                     case 403:
                         Logger.writeWarningMessage("[onOpen] Access Token Invalid or Expired!");
                         webSocket.close();
+                        break;
+
+                    default:
+                        Logger.writeErrorMessage("[onOpen] checkAccessToken Error | " + con.getResponseCode());
                         break;
                 }
             } catch (IOException e) {
@@ -174,7 +178,7 @@ public class AudioServer extends WebSocketServer {
                 return;
             }
         }
-        Logger.writeErrorMessage("[onError] Unknown User Error");
+        Logger.writeErrorMessage("[onError] Unknown User Error\nError:" + e.getMessage());
 
     }
 

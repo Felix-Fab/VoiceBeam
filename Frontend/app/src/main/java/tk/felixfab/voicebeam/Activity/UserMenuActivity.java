@@ -24,6 +24,7 @@ import tk.felixfab.voicebeam.Adapter.UsersAdapter;
 import tk.felixfab.voicebeam.Adapter.Data.UsersData;
 import tk.felixfab.voicebeam.R;
 import tk.felixfab.voicebeam.User.UserInfos;
+import tk.felixfab.voicebeam.etc.Logger;
 import tk.felixfab.voicebeam.etc.Var;
 
 public class UserMenuActivity extends AppCompatActivity {
@@ -85,20 +86,26 @@ public class UserMenuActivity extends AppCompatActivity {
                     con.setDoOutput(false);
                     con.connect();
 
-                    JSONObject jsonObject = HTTP.getJSONBody(con);
+                    JSONObject jsonObject;
 
-                    arrayList.clear();
+                    switch(con.getResponseCode()){
+                        case 200:
+                            jsonObject = HTTP.getJSONBody(con);
 
-                    if(jsonObject.getJSONArray("users").length() > 0){
-                        for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
-                            arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
-                        }
-                    }
+                            arrayList.clear();
 
-                    if(con.getResponseCode() == 200){
-                        publishProgress();
-                    }else{
-                        return jsonObject.getJSONArray("errors").getJSONObject(0).getString("msg");
+                            if(jsonObject.getJSONArray("users").length() > 0){
+                                for(int i = 0;i < jsonObject.getJSONArray("users").length();i++){
+                                    arrayList.add(new UsersData(jsonObject.getJSONArray("users").getJSONObject(i).getString("username"),""));
+                                }
+                            }
+
+                            publishProgress();
+                        break;
+
+                        default:
+                            //TODO: User Request Error Display
+                            break;
                     }
                 } catch (Exception e){
                     e.printStackTrace();

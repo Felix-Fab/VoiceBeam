@@ -87,7 +87,18 @@ async (req, res) => {
     });
 });
 
-router.patch("/status",authenticateToken, (req, res) => {
+router.patch("/status",authenticateToken, 
+    check("status")
+        .isBoolean()
+            .withMessage("Please provide a valid status"),
+async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
     const foundUser = req.user;
     
     foundUser.status = req.body.status;
@@ -101,7 +112,41 @@ router.patch("/status",authenticateToken, (req, res) => {
      });
 });
 
-router.patch("/getUsers",authenticateToken, (req,res) => {
+router.post("/status",notAuthenticated,
+    check("email")
+        .isEmail()
+            .withMessage("Please provide a valid Email!")
+        .isLength({ max: 254 })
+            .withMessage("Email cannot be longer that 254 Characters!"),
+    check("status")
+        .isBoolean(true) 
+            .withMessage("Status must be a Boolean!"),
+async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
+    const foundUser = await User.findOne({email: req.body.email});
+
+    if(!foundUser){
+        return res.status(401).json({errors:[{msg: "Invalid Credentials"}]});
+    }
+    
+    foundUser.status = req.body.status;
+
+     await foundUser.save();
+
+     return res.status(200).json({
+         username: foundUser.username,
+         email: foundUser.email,
+         status: foundUser.status
+     });
+});
+
+router.patch("/getUsers",authenticateToken, async(req,res) => {
     const Users = await User.find({status: true, username: { $ne: req.user.username } },"username").exec();
 
     return res.status(200).json({
@@ -109,7 +154,7 @@ router.patch("/getUsers",authenticateToken, (req,res) => {
     });
 });
 
-router.patch("/checkAccessToken",authenticateToken, (req, res) => {
+router.get("/checkAccessToken",authenticateToken, (req, res) => {
     return res.json({
         username: req.user.username,
         email: req.user.email

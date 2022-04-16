@@ -6,6 +6,8 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 
 import java.io.IOException;
 
+import tk.felixfab.voicebeam.User.UserInfos;
+
 public class WebSocketManager {
 
     public static WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(5000);
@@ -19,6 +21,7 @@ public class WebSocketManager {
         ws.addListener(new WebSocketListener());
 
         ws.addHeader("key","q4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D");
+        ws.addHeader("accessToken", UserInfos.getAccessToken());
 
         ws.connect();
     }

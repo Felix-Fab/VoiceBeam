@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(PermissionsManager.checkPermissions(MainActivity.this,MainActivity.this)){
+
+                if(!PermissionsManager.checkPermissions(MainActivity.this,MainActivity.this)){
                     loginTask = new LoginTask();
                     loginTask.execute(tf_email.getText().toString(),tf_password.getText().toString());
                 }

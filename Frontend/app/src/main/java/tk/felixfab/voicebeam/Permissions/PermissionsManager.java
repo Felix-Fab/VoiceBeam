@@ -17,47 +17,24 @@ public class PermissionsManager {
 
     public static boolean checkPermissions(Activity activity,Context context){
 
-        List<String> PermissionList = new ArrayList<>();
-
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET)  != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.INTERNET)){
-                PermissionList.add(Manifest.permission.INTERNET);
-            }
-        }
+        boolean status = false;
 
         if(ContextCompat.checkSelfPermission(context,Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.RECORD_AUDIO)){
-                PermissionList.add(Manifest.permission.RECORD_AUDIO);
-            }
+            requestPermission(activity,new String[]{Manifest.permission.RECORD_AUDIO});
+            status = true;
         }
 
         if(ContextCompat.checkSelfPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                PermissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            }
+            requestPermission(activity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+            status = true;
         }
 
         if(ContextCompat.checkSelfPermission(context,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                PermissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
+             requestPermission(activity,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
+            status = true;
         }
 
-        if(ContextCompat.checkSelfPermission(context,Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.MANAGE_EXTERNAL_STORAGE)){
-                PermissionList.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
-            }
-        }
-
-        if(PermissionList.size() <= 0){
-            return true;
-        }
-
-        String[] PermissionArray = new String[PermissionList.size()];
-        PermissionArray = PermissionList.toArray(PermissionArray);
-
-        requestPermission(activity,PermissionArray);
-        return false;
+        return status;
     }
 
     public static void requestPermission(Activity activity, String[] permissions){

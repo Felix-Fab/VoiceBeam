@@ -1,0 +1,43 @@
+#parent {
+    background-color: darkorange;
+    height: 100%;
+    width: 100%;
+    display: flex;
+	align-items: center; /* Vertikale Zentrierung */
+	justify-content: center; /* Horizontale Zentrierung */
+}
+
+h1 {
+    color: white;
+    font-size: 50px;
+    text-align: center;
+    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 100px;
+}
+
+#login-area {
+    text-align: center;
+    padding: 0 10px 0 10px;
+    width: 100%;
+}
+
+input {
+    height: 50px;
+    width: 100%;
+    margin-bottom: 10px;
+    font-style: italic;
+    font-weight: bold;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus-visible {
+    border-radius: 15px;
+}
+
+#login-button {
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+}

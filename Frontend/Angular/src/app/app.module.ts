@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { LoginMenuComponent, DialogLoginInvalid, DialogLoginError } from './login-menu/login-menu.component';
 import { LoginRegisterComponent } from './login-menu/register/login-register.component';
+import { UserMenuComponent } from './user-menu/user-menu.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { LoginRegisterComponent } from './login-menu/register/login-register.com
     DialogLoginError,
     DialogLoginInvalid,
     TopBarComponent,
-    LoginRegisterComponent
+    LoginRegisterComponent,
+    UserMenuComponent
   ],
   imports: [
     BrowserModule,

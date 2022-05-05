@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/Android Studio/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/Android Studio/app/src/main/res/layout/user_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/drawable/audio_send_listview_border.xml" value="0.267" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/drawable/eoundedbutton.xml" value="0.297" />
         <entry key="..\:/Users/FWiegand/Documents/Development/Projekte/VoiceBeam/Frontend/app/src/main/res/drawable/roundedbutton.xml" value="0.297" />

@@ -6,11 +6,10 @@
         <div id="block">
             <h1>VoiceBeam</h1>
             <div id="login-area">
-                <input type="email" name="email" placeholder="Email"><br />
-                <input type="password" name="passwort" placeholder="Password">
-                <button id="login-button">Login</button>
+                <input id="email" type="email" name="email" placeholder="Email"><br />
+                <input id="password" type="password" name="passwort" placeholder="Password">
+                <button (click)="onButtonLoginClick($event)" id="login-button">Login</button>
             </div>
         </div>
     </div>
 </body>
-

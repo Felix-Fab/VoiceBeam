@@ -22,22 +22,13 @@ h1 {
     width: 100%;
 }
 
-input {
-    height: 50px;
-    width: 100%;
-    margin-bottom: 10px;
-    font-style: italic;
-    font-weight: bold;
-    outline: none;
-    transition: 0.3s;
-}
-
-input:focus-visible {
-    border-radius: 15px;
-}
-
 #login-button {
     text-align: center;
     margin-top: 40px;
     width: 100%;
+}
+
+a.link {
+    color: white;
+    float: left;
 }

@@ -1,0 +1,28 @@
+h1 {
+    color: white;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: bold;
+}
+#top-bar {
+    display: flex;
+    background-color: var(--primary-color);
+    height: 60px;
+    width: 100%;
+}
+#content {
+    display: flex;
+	align-items: center; /* Vertikale Zentrierung */
+    height: 100%;
+    width: 100%;
+    padding: 15px;
+}
+#settings {
+    margin: 0 0 0 auto;
+    font-size: 32px;
+    transition: 0.3s;
+}
+
+#settings:active {
+    color: #272727
+}

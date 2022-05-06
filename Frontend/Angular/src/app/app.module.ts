@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialogModule, } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
-import { LoginMenuComponent, DialogLoginInvalid, DialogLoginError } from './login-menu/login-menu.component';
-import { LoginRegisterComponent } from './login-menu/register/login-register.component';
-import { UserMenuComponent } from './user-menu/user-menu.component';
+import { LoginMenuComponent} from './pages/login-menu/login-menu.component';
+import { LoginRegisterComponent } from './pages/login-menu/register/login-register.component';
+import { UserMenuComponent } from './pages/user-menu/user-menu.component';
+import { DialogLoginError } from './dialogs/Error/dialog-login-error';
+import { DialogLoginInvalid } from './dialogs/Invalid/dialog-login-invalid';
 
 @NgModule({
   declarations: [
@@ -21,12 +23,13 @@ import { UserMenuComponent } from './user-menu/user-menu.component';
     UserMenuComponent
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatDialog
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
+  exports: [],
   providers: [],
-  bootstrap: [AppComponent,LoginMenuComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

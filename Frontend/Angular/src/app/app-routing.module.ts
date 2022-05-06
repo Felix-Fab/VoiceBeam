@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginMenuComponent } from './login-menu/login-menu.component';
-import { LoginRegisterComponent } from './login-menu/register/login-register.component';
-import { UserMenuComponent } from './user-menu/user-menu.component';
+import { LoginMenuComponent } from './pages/login-menu/login-menu.component';
+import { LoginRegisterComponent } from './pages/login-menu/register/login-register.component';
+import { UserMenuComponent } from './pages/user-menu/user-menu.component';
 
 const routes: Routes = [
   { path:'', redirectTo: 'LoginMenu',pathMatch: 'full'},

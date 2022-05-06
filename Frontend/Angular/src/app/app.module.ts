@@ -9,18 +9,20 @@ import { TopBarComponent } from './top-bar/top-bar.component';
 import { LoginMenuComponent} from './pages/login-menu/login-menu.component';
 import { LoginRegisterComponent } from './pages/login-menu/register/login-register.component';
 import { UserMenuComponent } from './pages/user-menu/user-menu.component';
-import { DialogLoginError } from './dialogs/Error/dialog-login-error';
-import { DialogLoginInvalid } from './dialogs/Invalid/dialog-login-invalid';
+import { DialogError } from './dialogs/Error/dialog-error';
+import { DialogWarning } from './dialogs/Warning/dialog-warning';
+import { DialogInfo } from './dialogs/Info/dialog-info'
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginMenuComponent,
-    DialogLoginError,
-    DialogLoginInvalid,
-    TopBarComponent,
+    DialogError,
+    DialogInfo,
+    DialogWarning,
     LoginRegisterComponent,
-    UserMenuComponent
+    UserMenuComponent,
+    TopBarComponent
   ],
   imports: [
     AppRoutingModule,

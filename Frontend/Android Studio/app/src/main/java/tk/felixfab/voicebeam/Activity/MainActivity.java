@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (strings.length >= 2) {
 
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/login", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/login", "POST");
 
                     String json = "{ \"email\": \"" + strings[0] + "\", \"password\":\"" + strings[1] + "\"}";
 

@@ -80,7 +80,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
             while (isFinishing() != true && isDestroyed() != true){
                 try {
-                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/getUsers", "PATCH");
+                    HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/getUsers", "POST");
                     con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 
                     con.setDoOutput(false);

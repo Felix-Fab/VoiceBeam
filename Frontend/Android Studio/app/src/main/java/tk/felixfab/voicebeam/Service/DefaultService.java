@@ -79,7 +79,7 @@ public class DefaultService extends Service {
     public void onDestroy() {
 
         try {
-            HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status", "PATCH");
+            HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status", "POST");
 
             con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());
 

@@ -11,7 +11,8 @@ import { LoginRegisterComponent } from './pages/login-menu/register/login-regist
 import { UserMenuComponent } from './pages/user-menu/user-menu.component';
 import { DialogError } from './dialogs/Error/dialog-error';
 import { DialogWarning } from './dialogs/Warning/dialog-warning';
-import { DialogInfo } from './dialogs/Info/dialog-info'
+import { DialogInfo } from './dialogs/Info/dialog-info';
+import { AudioSendComponent } from './pages/audio-send/audio-send.component'
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DialogInfo } from './dialogs/Info/dialog-info'
     DialogWarning,
     LoginRegisterComponent,
     UserMenuComponent,
-    TopBarComponent
+    TopBarComponent,
+    AudioSendComponent
   ],
   imports: [
     AppRoutingModule,

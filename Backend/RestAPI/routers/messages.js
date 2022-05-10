@@ -45,7 +45,7 @@ async (req,res) => {
     return res.status(201).json({info: 'Message has been successfully created!'});
 });   
 
-router.patch("/getMessages",authenticateToken,
+router.post("/getMessages",authenticateToken,
     check("username1")
         .isLength({min: 1})
             .withMessage("Username1 has to be at least 1 Character long!")

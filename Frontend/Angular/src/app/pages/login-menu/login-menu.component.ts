@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import * as $ from "jquery";
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
+import { Router } from '@angular/router';
+import UserInfo from "src/app/classes/UserInfo";
 
 interface Config{
   username: string,
@@ -17,7 +19,7 @@ interface Config{
 })
 export class LoginMenuComponent implements OnInit {
 
-  constructor(private http: HttpClient,private dialog:MatDialog) { }
+  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -26,11 +28,21 @@ export class LoginMenuComponent implements OnInit {
     var EmailInput = $("#email")[0] as HTMLInputElement;
     var PasswordInput = $("#password")[0] as HTMLInputElement;
 
-    const headers = { 'Content-Type': 'application/json'};
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
 
-    this.http.patch<Config>("http://37.114.34.153:3000/manager/login",{ email: EmailInput.value, password: PasswordInput.value},{ headers }).subscribe({
+    const body = {
+      email: EmailInput.value, password: PasswordInput.value
+    }
+
+    this.http.post<Config>("http://37.114.34.153:3000/manager/login", body, {headers}).subscribe({
       next: data => {
-        debugger;
+        UserInfo.setUsername(data.username);
+        UserInfo.setEmail(data.email);
+        UserInfo.setAccessToken(data.accessToken);
+
+        this.router.navigate(["/UserMenu"]);
       },
       error: error => {
         if(error.status === 400 || error.status === 401){

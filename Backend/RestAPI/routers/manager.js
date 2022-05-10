@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken"
 
 const router = Router();
 
-router.patch("/register",notAuthenticated,
+router.post("/register",notAuthenticated,
     check("username")
         .isLength({min:1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -53,7 +53,7 @@ async (req, res) => {
     return res.status(201).json({info: "Account has been successfully created!"});
 });
 
-router.patch("/login",notAuthenticated,
+router.post("/login",notAuthenticated,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -87,7 +87,7 @@ async (req, res) => {
     });
 });
 
-router.patch("/status",authenticateToken, 
+router.post("/status",authenticateToken, 
     check("status")
         .isBoolean()
             .withMessage("Please provide a valid status"),
@@ -146,7 +146,7 @@ async (req, res) => {
      });
 });
 
-router.patch("/getUsers",authenticateToken, async(req,res) => {
+router.post("/getUsers",authenticateToken, async(req,res) => {
     const Users = await User.find({status: true, username: { $ne: req.user.username } },"username").exec();
 
     return res.status(200).json({

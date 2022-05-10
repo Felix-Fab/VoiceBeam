@@ -47,7 +47,7 @@ public class checkStatusTimer {
                     }
 
                     try {
-                        HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status","PATCH");
+                        HttpURLConnection con = HTTP.createDefaultConnection("http://" + Var.Host + ":3000/manager/status","POST");
 
                         String json = "{ \"email\": \"" + UserInfos.getEmail() + "\", \"status\": " + status + " }";
                         con.addRequestProperty("authorization","Bearer " + UserInfos.getAccessToken());

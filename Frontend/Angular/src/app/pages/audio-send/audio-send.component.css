@@ -1,0 +1,51 @@
+#top-container{
+    height: 85%;
+    width: 100%;
+}
+#user-bar {
+    background-color: var(--primary-color);
+    height: 60px;
+    width: 100%;
+}
+#user-bar .material-icons{
+    margin: 15px;
+    color: white;
+    font-size: 30px;
+}
+#currentuser{
+    float: right;
+    margin: 18px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+}
+#currentuser .material-icons{
+    color: white;
+    font-size: 36px;
+    padding-left: 10px;
+    margin-top: -6px;
+}
+#bottom-container{
+    height: 15%;
+    width: 100%;
+    border-top: 1px solid grey;
+}
+#bottom-container .material-icons{
+    color: white;
+    border: 16px solid;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 40px 40px 40px 40px;
+    font-size: 40px;
+    height: fit-content;
+    width: fit-content;
+}
+#content{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+

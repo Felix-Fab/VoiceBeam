@@ -1,12 +1,8 @@
 import fetch from "node-fetch";
 import { Server } from "socket.io";
-import '../Parameters.js';
-import Parameters from "../Parameters.js";
 
 export default class WebSocketServer{
-
-    constructor(){
-
+    constructor() {
         this.Sockets = [];
 
         this.server = new Server({cors: {
@@ -16,7 +12,8 @@ export default class WebSocketServer{
         this.server.on('connection', (socket) => {
             const authorization = socket.handshake.headers['authorization'];
 
-            fetch(`http://127.0.0.1:${Parameters.ApiPort}/manager/checkAccessToken`, {
+            // TODO: Do not use static IP here
+            fetch(`http://127.0.0.1:${process.env.API_PORT}/auth/checkAccessToken`, {
                 method: 'GET',
                 headers: {
                     Authorization: authorization
@@ -33,21 +30,18 @@ export default class WebSocketServer{
             });
 
             socket.on("sendDataToServer", (data) => {
-                
                 var JsonData = JSON.parse(data);
 
                 this.Sockets.forEach(element => {
                     if(element.username == JsonData.to){
-                        element.emit('SendDataToClient',data);
-                        debugger;
+                        element.emit('SendDataToClient', data);
                     }
-                    debugger;
                 });
             });
         });
     
-        this.server.listen(Parameters.WebSocketPort);
+        this.server.listen(process.env.WEBSOCKET_PORT);
 
-        console.log(`WebSocket running on Port ${Parameters.WebSocketPort}...`)
+        console.log(`WebSocket running on Port ${process.env.WEBSOCKET_PORT}!`)
     }
 }

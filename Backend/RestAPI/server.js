@@ -1,27 +1,29 @@
+import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
-import Users from "./routers/manager.js";
-import Messages from "./routers/messages.js";
+import AuthRouter from "./routers/auth.js";
+import MessagesRouter from "./routers/messages.js";
+
 import WebSocketServer from "./routers/WebSocketServer.js";
-import Parameters from './Parameters.js';
 
-await mongoose.connect(Parameters.DBURL).then(() => console.log(`Connetect to DB "${Parameters.DBURL}"!`));
+await mongoose.connect(process.env.DB_URL)
+    .then(() => {
+        console.log(`Connected to DB "${process.env.DB_URL}"!`)
+    });
 
-const RestAPIApp = express();
+const api = express();
 
-RestAPIApp.use(express.json());
+api.use(express.json());
 
-RestAPIApp.use(cors())
+api.use(cors());
 
-RestAPIApp.use("/manager",Users);
-RestAPIApp.use("/messages",Messages);
+api.use("/auth", AuthRouter);
+api.use("/messages", MessagesRouter);
 
-RestAPIApp.listen(Parameters.ApiPort,() => {
-    console.log(`API running on Port ${Parameters.ApiPort}...`);
+api.listen(process.env.API_PORT, () => {
+    console.log(`API running on Port ${process.env.API_PORT}!`);
 });
 
-if(Parameters.StartWebSocket){
-    new WebSocketServer();
-}
+new WebSocketServer();

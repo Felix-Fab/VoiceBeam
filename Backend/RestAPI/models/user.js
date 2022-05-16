@@ -24,10 +24,26 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    accessToken:{
-        type: String,
-        required: false,
-    },
+    sessions: [
+        {
+            token: {
+                type: String,
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            expiresAt: {
+                type: Date,
+                required: true
+            },
+            invalidated: {
+                type: Boolean,
+                default: false
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         required: false,

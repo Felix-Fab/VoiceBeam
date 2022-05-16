@@ -1,11 +1,12 @@
-import {Router} from "express";
+import { Router } from "express";
 import { check, validationResult } from "express-validator";
+import { isAuthorized } from "./auth.js";
 import Message from "../models/message.js";
 import User from "../models/user.js";
 
 const router = Router();
 
-router.post("/add",authenticateToken,
+router.post("/add", isAuthorized,
     check("from")
         .isLength({min: 1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -45,7 +46,7 @@ async (req,res) => {
     return res.status(201).json({info: 'Message has been successfully created!'});
 });   
 
-router.post("/getMessages",authenticateToken,
+router.post("/getMessages", isAuthorized,
     check("username1")
         .isLength({min: 1})
             .withMessage("Username1 has to be at least 1 Character long!")
@@ -93,7 +94,7 @@ async (req, res) => {
     });
 });
 
-router.delete("/removeMessages",authenticateToken, (req,res) => {
+router.delete("/removeMessages", isAuthorized, (req,res) => {
 
     Message.deleteMany({}, function ( err ) {
 
@@ -104,27 +105,7 @@ router.delete("/removeMessages",authenticateToken, (req,res) => {
     });
 });
 
+// TODO: What the hell does this do?
 router.ws
-
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-    if (!token) return res.status(401).json({ info: "Not Authorized!" });
-
-    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, tokenData) => {
-        if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
-        req.user = await User.findOne({ _id: tokenData._id });
-
-        next();
-    });
-}
-
-function notAuthenticated(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-    if (token) return res.status(401).json({ info: "Not Authorized!" });
-
-    next();
-}
 
 export default router;

@@ -12,10 +12,17 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
-    "express": "^4.17.3",
+    "express": "^4.18.1",
     "express-jwt": "^6.1.1",
     "express-validator": "^6.14.0",
-    "mongoose": "^6.2.4"
+    "express-ws": "^5.0.2",
+    "mongoose": "^6.2.4",
+    "net": "^1.0.2",
+    "node-fetch": "^3.2.4",
+    "path": "^0.12.7",
+    "socket.io": "^4.5.0",
+    "url": "^0.11.0",
+    "ws": "^8.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

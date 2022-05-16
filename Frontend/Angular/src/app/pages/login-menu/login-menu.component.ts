@@ -5,6 +5,8 @@ import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { Router } from '@angular/router';
 import UserInfo from "src/app/classes/UserInfo";
+import {WebsocketService} from "src/app/services/WebSocket/websocket.service";
+import Http from 'src/app/classes/Http';
 
 interface Config{
   username: string,
@@ -19,7 +21,7 @@ interface Config{
 })
 export class LoginMenuComponent implements OnInit {
 
-  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router) { }
+  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService) { }
 
   ngOnInit(): void {
   }
@@ -36,13 +38,17 @@ export class LoginMenuComponent implements OnInit {
       email: EmailInput.value, password: PasswordInput.value
     }
 
-    this.http.post<Config>("http://37.114.34.153:3000/manager/login", body, {headers}).subscribe({
+    this.http.post<Config>(Http.getServerUrl() +  ":3000/manager/login", body, {headers}).subscribe({
       next: data => {
         UserInfo.setUsername(data.username);
         UserInfo.setEmail(data.email);
         UserInfo.setAccessToken(data.accessToken);
 
+        this._webSocket.init();
+        debugger;
+
         this.router.navigate(["/UserMenu"]);
+
       },
       error: error => {
         if(error.status === 400 || error.status === 401){

@@ -1,25 +1,27 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 
 import Users from "./routers/manager.js";
 import Messages from "./routers/messages.js";
-import cors from "cors";
+import WebSocketServer from "./routers/WebSocketServer.js";
+import Parameters from './Parameters.js';
 
-const PORT = 3000;
-const DBURL = "mongodb://admin:Cstrike1@localhost:27017/voicebeam?authSource=admin";
-export const ACCESS_TOKEN_SECRET = "Security"
-export const SALTROUNDS = 10;
+await mongoose.connect(Parameters.DBURL).then(() => console.log(`Connetect to DB "${Parameters.DBURL}"!`));
 
-await mongoose.connect(DBURL).then(() => console.log(`Connetect to DB "${DBURL}"!`));
+const RestAPIApp = express();
 
-const app = express();
-app.use(express.json());
+RestAPIApp.use(express.json());
 
-app.use(cors())
+RestAPIApp.use(cors())
 
-app.use("/manager",Users);
-app.use("/messages",Messages);
+RestAPIApp.use("/manager",Users);
+RestAPIApp.use("/messages",Messages);
 
-app.listen(PORT,() => {
-    console.log(`Running on Port ${PORT}!`);
+RestAPIApp.listen(Parameters.ApiPort,() => {
+    console.log(`API running on Port ${Parameters.ApiPort}...`);
 });
+
+if(Parameters.StartWebSocket){
+    new WebSocketServer();
+}

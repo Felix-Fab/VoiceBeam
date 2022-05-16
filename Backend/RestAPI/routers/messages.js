@@ -104,6 +104,8 @@ router.delete("/removeMessages",authenticateToken, (req,res) => {
     });
 });
 
+router.ws
+
 function authenticateToken(req, res, next) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];

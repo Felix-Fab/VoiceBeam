@@ -1,9 +1,10 @@
 import {Router} from "express";
 import { check, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import { SALTROUNDS,ACCESS_TOKEN_SECRET } from "../server.js";
+import "../Parameters.js";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken"
+import Parameters from "../Parameters.js";
 
 const router = Router();
 
@@ -76,7 +77,7 @@ async (req, res) => {
         return res.status(401).json({ errors: [{ msg: "Invalid Credentials!"}] });
     }
 
-    const accessToken = jwt.sign({ _id: foundUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign({ _id: foundUser._id }, Parameters.AccessTokenSecret, { expiresIn: "15m" });
 
     await User.updateOne({ email: req.body.email}, { accessToken: accessToken });
 
@@ -112,7 +113,7 @@ async(req, res) => {
      });
 });
 
-router.post("/status",notAuthenticated,
+router.get("/status",notAuthenticated,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -166,7 +167,7 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1];
     if (!token) return res.status(401).json({ info: "Not Authorized!" });
 
-    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, tokenData) => {
+    jwt.verify(token, Parameters.AccessTokenSecret, async (err, tokenData) => {
         if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
         req.user = await User.findOne({ _id: tokenData._id });
 
@@ -183,7 +184,7 @@ function notAuthenticated(req, res, next) {
 }
 
 async function generateHash(rawPassword) {
-    const salt = await bcrypt.genSalt(SALTROUNDS);
+    const salt = await bcrypt.genSalt(Parameters.Saltrounds);
     return await bcrypt.hash(rawPassword, salt);
 }
 

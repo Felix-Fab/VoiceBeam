@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import UserInfo from 'src/app/classes/UserInfo';
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
+import Http from 'src/app/classes/Http';
+import { Router } from '@angular/router';
 
 interface Users{
   users: [
@@ -25,7 +27,7 @@ export class UserMenuComponent implements OnInit {
 
   ];
 
-  constructor(private http: HttpClient,private dialog:MatDialog) {
+  constructor(private http: HttpClient,private dialog:MatDialog, private router:Router) {
   }
 
   ngOnInit(): void {
@@ -37,7 +39,7 @@ export class UserMenuComponent implements OnInit {
 
     debugger;
 
-    var hallo = this.http.post<Users>("http://37.114.34.153:3000/manager/getUsers", {} , {headers}).subscribe({
+    var hallo = this.http.post<Users>(Http.getServerUrl() + ":3000/manager/getUsers", {} , {headers}).subscribe({
       next: data => {
         debugger;
           this.users = data.users;
@@ -64,6 +66,6 @@ export class UserMenuComponent implements OnInit {
   }
 
   onClickUser(username: string){
-    //Open Audio Send Page
+    this.router.navigateByUrl('/AudioSend', { state: { username: username } });
   }
 }

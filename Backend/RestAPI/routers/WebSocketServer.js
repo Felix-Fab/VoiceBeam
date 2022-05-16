@@ -33,17 +33,20 @@ export default class WebSocketServer{
             });
 
             socket.on("sendDataToServer", (data) => {
-                
                 var JsonData = JSON.parse(data);
 
                 this.Sockets.forEach(element => {
                     if(element.username == JsonData.to){
-                        element.emit('SendDataToClient',data);
-                        debugger;
+                        element.emit('SendDataToClient',JsonData);
                     }
                     debugger;
                 });
+                debugger;
             });
+
+            socket.on("ClientDisconnect", (username) => {
+                this.Sockets.filter(socket => socket.username != username);
+            })
         });
     
         this.server.listen(Parameters.WebSocketPort);

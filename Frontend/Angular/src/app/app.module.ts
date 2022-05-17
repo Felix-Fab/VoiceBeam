@@ -12,7 +12,8 @@ import { UserMenuComponent } from './pages/user-menu/user-menu.component';
 import { DialogError } from './dialogs/Error/dialog-error';
 import { DialogWarning } from './dialogs/Warning/dialog-warning';
 import { DialogInfo } from './dialogs/Info/dialog-info';
-import { AudioSendComponent } from './pages/audio-send/audio-send.component'
+import { AudioSendComponent } from './pages/audio-send/audio-send.component';
+import { SettingsMenuComponent } from './settings-menu/settings-menu.component'
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AudioSendComponent } from './pages/audio-send/audio-send.component'
     LoginRegisterComponent,
     UserMenuComponent,
     TopBarComponent,
-    AudioSendComponent
+    AudioSendComponent,
+    SettingsMenuComponent
   ],
   imports: [
     AppRoutingModule,

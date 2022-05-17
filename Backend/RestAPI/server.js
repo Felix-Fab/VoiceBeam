@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import startCronJobs from "./cronJobs.js";
 
 import AuthRouter from "./routers/auth.js";
 import MessagesRouter from "./routers/messages.js";
@@ -12,6 +13,8 @@ await mongoose.connect(process.env.DB_URL)
     .then(() => {
         console.log(`Connected to DB "${process.env.DB_URL}"!`)
     });
+
+startCronJobs();
 
 const api = express();
 

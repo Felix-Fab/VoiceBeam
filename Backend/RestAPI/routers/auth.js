@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import moment from "moment";
 import jwt from "jsonwebtoken"
+import sessionsRouter from "./sessions.js";
 
 const router = Router();
 
@@ -116,7 +117,7 @@ router.get("/logout", isAuthorized, async (req, res) => {
 router.post("/status", isAuthorized, 
     check("status")
         .isBoolean()
-            .withMessage("Please provide a valid status"),
+            .withMessage("Please provide a valid status!"),
 async(req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -222,10 +223,6 @@ export async function isAuthorized(req, res, next) {
         });
     }
 
-    // TODO: Code can probably be optimized
-    //       Definitely should use a loop from foundUser here,
-    //       because otherwise we just make silly requests
-    //       to DB.
     let sessionInvalidated = false;
     foundUser.sessions.every(session => {
         if (session.token === token) {
@@ -247,7 +244,8 @@ export async function isAuthorized(req, res, next) {
             ]
         });
     }
-    // Code optimize ending
+
+    req.user.currentToken = token;
 
     return next();
 }
@@ -270,5 +268,7 @@ async function generateHash(rawPassword) {
 async function compareHash(hash, text) {
     return await bcrypt.compare(text, hash);
 }
+
+router.use("/sessions", sessionsRouter);
 
 export default router;

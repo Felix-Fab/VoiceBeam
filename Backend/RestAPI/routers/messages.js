@@ -105,7 +105,4 @@ router.delete("/removeMessages", isAuthorized, (req,res) => {
     });
 });
 
-// TODO: What the hell does this do?
-router.ws
-
 export default router;

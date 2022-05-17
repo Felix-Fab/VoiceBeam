@@ -14,7 +14,6 @@ export default class WebSocketServer{
 
             // TODO: Do not use static IP here
             // TODO: Do not fetch here, use a function instead.
-            //       For example, 
             fetch(`http://127.0.0.1:${process.env.API_PORT}/auth/checkAccessToken`, {
                 method: 'GET',
                 headers: {

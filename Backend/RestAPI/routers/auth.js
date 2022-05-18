@@ -95,12 +95,9 @@ async (req, res) => {
 });
 
 router.get("/logout", isAuthorized, async (req, res) => {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
     await User.updateOne(
         {
-            _id: req.user._id, "sessions.token": token
+            _id: req.user._id, "sessions.token": req.user.currentToken
         },
         {
             $set: {

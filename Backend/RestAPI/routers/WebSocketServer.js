@@ -2,6 +2,8 @@ import fetch from "node-fetch";
 import { Server } from "socket.io";
 import '../Parameters.js';
 import Parameters from "../Parameters.js";
+import 'colors';
+import Logger from "../classes/Logger.js";
 
 export default class WebSocketServer{
 
@@ -14,6 +16,7 @@ export default class WebSocketServer{
         }});
     
         this.server.on('connection', (socket) => {
+
             const authorization = socket.handshake.headers['authorization'];
 
             fetch(`http://127.0.0.1:${Parameters.ApiPort}/manager/checkAccessToken`, {
@@ -26,22 +29,22 @@ export default class WebSocketServer{
             .then(json => {
                 socket.username = json.username;
                 this.Sockets.push(socket);
+
+                Logger.writeSuccess("WebSocket-",`${socket.username} connected`);
             }).catch(error => {
-                console.log("Client disconnected");
-                console.log(error);
+                Logger.writeWarning("WebSocket-",`Unknown Client connected`);
                 socket.disconnect();
             });
 
             socket.on("sendDataToServer", (data) => {
+                console.log("Client Data Received");
                 var JsonData = JSON.parse(data);
 
                 this.Sockets.forEach(element => {
                     if(element.username == JsonData.to){
                         element.emit('SendDataToClient',JsonData);
                     }
-                    debugger;
                 });
-                debugger;
             });
 
             socket.on("ClientDisconnect", (username) => {
@@ -51,6 +54,6 @@ export default class WebSocketServer{
     
         this.server.listen(Parameters.WebSocketPort);
 
-        console.log(`WebSocket running on Port ${Parameters.WebSocketPort}...`)
+        Logger.writeServerLog("",`WebSocket running on Port ${Parameters.WebSocketPort}...`)
     }
 }

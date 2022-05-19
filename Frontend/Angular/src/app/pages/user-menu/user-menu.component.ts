@@ -39,7 +39,7 @@ export class UserMenuComponent implements OnInit {
 
     debugger;
 
-    var hallo = this.http.post<Users>(Http.getServerUrl() + ":3000/manager/getUsers", {} , {headers}).subscribe({
+    var hallo = this.http.post<Users>(Http.getAPIUrl() + "/manager/getUsers", {} , {headers}).subscribe({
       next: data => {
         debugger;
           this.users = data.users;

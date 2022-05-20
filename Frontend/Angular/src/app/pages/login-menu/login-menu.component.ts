@@ -4,8 +4,7 @@ import * as $ from "jquery";
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { Router } from '@angular/router';
-import UserInfo from "src/app/classes/UserInfo";
-import {WebsocketService} from "src/app/services/WebSocket/websocket.service";
+import { WebsocketService } from "src/app/services/WebSocket/websocket.service";
 import Http from 'src/app/classes/Http';
 
 interface Config{
@@ -38,11 +37,11 @@ export class LoginMenuComponent implements OnInit {
       email: EmailInput.value, password: PasswordInput.value
     }
 
-    this.http.post<Config>(Http.getAPIUrl() +  "/auth/login", body, {headers}).subscribe({
+    this.http.post<Config>(Http.getAPIUrl() + "/auth/login", body, {headers}).subscribe({
       next: data => {
-        UserInfo.setUsername(data.username);
-        UserInfo.setEmail(data.email);
-        UserInfo.setAccessToken(data.accessToken);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("accessToken", data.accessToken);
 
         this._webSocket.init();
         debugger;

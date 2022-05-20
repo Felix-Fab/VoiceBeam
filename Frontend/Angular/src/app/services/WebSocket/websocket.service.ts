@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
 import { io, Socket } from 'socket.io-client';
-import UserInfo from 'src/app/classes/UserInfo';
 import Debug from 'src/app/Debug';
 import Http from 'src/app/classes/Http';
 
@@ -18,7 +17,7 @@ export class WebsocketService {
 
     this.websocket = io(Http.getWebSocketUrl(), {
       extraHeaders: {
-        Authorization: "Bearer " + UserInfo.getAccessToken()
+        Authorization: "Bearer " + localStorage.getItem("accessToken")
       }
     });
     console.log("Connecting to WebSocket...");
@@ -43,7 +42,8 @@ export class WebsocketService {
 
     this.websocket.on('disconnected', () => {
       console.log("WebSocket disconnect");
-      this.websocket.emit('ClientDisconnect',UserInfo.getUsername);
+      /* TODO: Insecure! You could potentially kill other sessions! */
+      this.websocket.emit('ClientDisconnect', localStorage.getItem("username"));
     });
 
     this.websocket.on("connect", () => {

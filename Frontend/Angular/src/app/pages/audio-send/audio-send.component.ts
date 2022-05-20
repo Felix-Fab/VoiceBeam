@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { RecordRTCPromisesHandler } from 'recordrtc';
 import "src/app/classes/ArrayBufferConverter";
 import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
-import UserInfo from 'src/app/classes/UserInfo';
 import {WebsocketService} from "src/app/services/WebSocket/websocket.service";
 
 @Component({
@@ -35,7 +34,8 @@ export class AudioSendComponent implements OnInit {
 
       var Data = {
         Key: "message",
-        from: UserInfo.getUsername,
+        /* TODO: This needs to get set server-side! Very insecure! */
+        from: localStorage.getItem("username"),
         to: 'admin',
         data: await AudioBlob.text()
       }

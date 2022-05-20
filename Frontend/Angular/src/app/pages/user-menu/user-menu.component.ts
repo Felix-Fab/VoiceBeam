@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import UserInfo from 'src/app/classes/UserInfo';
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import Http from 'src/app/classes/Http';
@@ -31,29 +30,24 @@ export class UserMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${UserInfo.getAccessToken()}`
+      'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
     }
 
-    debugger;
-
-    this.http.post<Users>(Http.getAPIUrl() + "/auth/getUsers", {} , {headers}).subscribe({
+    this.http.post<Users>(Http.getAPIUrl() + "/auth/getUsers", {} , { headers }).subscribe({
       next: data => {
-        debugger;
           this.users = data.users;
       },
       error: error => {
-
-        if(error.status === 401){
+        if(error.status === 401) {
           this.dialog.open(DialogError, {
             data:{
               title: 'Request Error',
               message: 'Not Authorized!'
             }
           });
-        }else if(error.status === 403){
+        } else if(error.status === 403) {
           this.dialog.open(DialogError, {
             data:{
               title: 'Request Error',
@@ -62,7 +56,7 @@ export class UserMenuComponent implements OnInit {
           });
         }
       }
-    })
+    });
   }
 
   onClickUser(username: string){

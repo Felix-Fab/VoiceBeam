@@ -1,5 +1,7 @@
 import fetch from "node-fetch";
 import { Server } from "socket.io";
+import 'colors';
+import Logger from "../classes/Logger.js";
 
 export default class WebSocketServer{
     constructor() {
@@ -10,6 +12,7 @@ export default class WebSocketServer{
         }});
     
         this.server.on('connection', (socket) => {
+
             const authorization = socket.handshake.headers['authorization'];
 
             // TODO: Do not use static IP here
@@ -24,13 +27,15 @@ export default class WebSocketServer{
             .then(json => {
                 socket.username = json.username;
                 this.Sockets.push(socket);
+
+                Logger.writeSuccess("WebSocket-",`${socket.username} connected`);
             }).catch(error => {
-                console.log("Client disconnected");
-                console.log(error);
+                Logger.writeWarning("WebSocket-",`Unknown Client connected`);
                 socket.disconnect();
             });
 
             socket.on("sendDataToServer", (data) => {
+                console.log("Client Data Received");
                 var JsonData = JSON.parse(data);
 
                 this.Sockets.forEach(element => {
@@ -38,7 +43,6 @@ export default class WebSocketServer{
                         element.emit('SendDataToClient',JsonData);
                     }
                 });
-                debugger;
             });
 
             socket.on("ClientDisconnect", (username) => {
@@ -48,6 +52,6 @@ export default class WebSocketServer{
     
         this.server.listen(process.env.WEBSOCKET_PORT);
 
-        console.log(`WebSocket running on Port ${process.env.WEBSOCKET_PORT}!`)
+        Logger.writeServerLog("",`WebSocket running on Port ${process.env.WEBSOCKET_PORT}...`)
     }
 }

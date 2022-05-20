@@ -9,10 +9,10 @@ import MessagesRouter from "./routers/messages.js";
 
 import WebSocketServer from "./routers/WebSocketServer.js";
 
-await mongoose.connect(process.env.DB_URL)
-    .then(() => {
-        console.log(`Connected to DB "${process.env.DB_URL}"!`)
-    });
+import Logger from "./classes/Logger.js";
+
+console.clear();
+await mongoose.connect(process.env.DB_URL).then(() => Logger.writeServerLog("",`Connetect to DB "${process.env.DB_URL}"!`));
 
 startCronJobs();
 
@@ -26,7 +26,7 @@ api.use("/auth", AuthRouter);
 api.use("/messages", MessagesRouter);
 
 api.listen(process.env.API_PORT, () => {
-    console.log(`API running on Port ${process.env.API_PORT}!`);
+    Logger.writeServerLog("", `API running on Port ${process.env.API_PORT}...`);
 });
 
 new WebSocketServer();

@@ -1,5 +1,6 @@
 import cron from "node-cron";
 import User from "./models/user.js";
+import Logger from "./classes/Logger.js";
 
 export default function startCronJobs() {
     // Delete Invalid Sessions every hour
@@ -8,7 +9,7 @@ export default function startCronJobs() {
     });
     deleteInvalidSessions();
 
-    console.log("Cron-Jobs Started!");
+    Logger.writeServerLog("", `Cron Jobs started!`);
 }
 
 async function deleteInvalidSessions() {

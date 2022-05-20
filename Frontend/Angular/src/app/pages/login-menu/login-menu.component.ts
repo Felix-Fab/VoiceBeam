@@ -38,7 +38,7 @@ export class LoginMenuComponent implements OnInit {
       email: EmailInput.value, password: PasswordInput.value
     }
 
-    this.http.post<Config>(Http.getServerUrl() +  ":3000/manager/login", body, {headers}).subscribe({
+    this.http.post<Config>(Http.getAPIUrl() +  "/auth/login", body, {headers}).subscribe({
       next: data => {
         UserInfo.setUsername(data.username);
         UserInfo.setEmail(data.email);

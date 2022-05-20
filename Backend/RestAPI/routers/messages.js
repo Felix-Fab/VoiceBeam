@@ -6,7 +6,9 @@ import User from "../models/user.js";
 
 const router = Router();
 
-router.post("/add", isAuthorized,
+router.use(isAuthorized);
+
+router.post("/add",
     check("from")
         .isLength({min: 1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -46,7 +48,7 @@ async (req,res) => {
     return res.status(201).json({info: 'Message has been successfully created!'});
 });   
 
-router.post("/getMessages", isAuthorized,
+router.post("/getMessages",
     check("username1")
         .isLength({min: 1})
             .withMessage("Username1 has to be at least 1 Character long!")
@@ -94,7 +96,7 @@ async (req, res) => {
     });
 });
 
-router.delete("/removeMessages", isAuthorized, (req,res) => {
+router.delete("/removeMessages", (req,res) => {
 
     Message.deleteMany({}, function ( err ) {
 

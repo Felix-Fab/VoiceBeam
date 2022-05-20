@@ -1,14 +1,14 @@
 import {Router} from "express";
 import { check, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import "../Parameters.js";
 import User from "../models/user.js";
+import moment from "moment";
 import jwt from "jsonwebtoken"
-import Parameters from "../Parameters.js";
+import sessionsRouter from "./sessions.js";
 
 const router = Router();
 
-router.post("/register",notAuthenticated,
+router.post("/register", isNotAuthorized,
     check("username")
         .isLength({min:1})
             .withMessage("Username has to be at least 1 Character long!")
@@ -54,7 +54,7 @@ async (req, res) => {
     return res.status(201).json({info: "Account has been successfully created!"});
 });
 
-router.post("/login",notAuthenticated,
+router.post("/login", isNotAuthorized,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -77,9 +77,15 @@ async (req, res) => {
         return res.status(401).json({ errors: [{ msg: "Invalid Credentials!"}] });
     }
 
-    const accessToken = jwt.sign({ _id: foundUser._id }, Parameters.AccessTokenSecret, { expiresIn: "15m" });
+    // TODO: We need a longer token time maybe 30 days?
+    //       This should solve the issue of reauthenticating everytime you open the app.
+    const accessToken = jwt.sign({ _id: foundUser._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    await User.updateOne({ email: req.body.email}, { accessToken: accessToken });
+    foundUser.sessions.push({
+        token: accessToken,
+        expiresAt: moment().add(15, "m")
+    });
+    await foundUser.save();
 
     return res.status(200).json({
         username: foundUser.username,
@@ -88,10 +94,27 @@ async (req, res) => {
     });
 });
 
-router.post("/status",authenticateToken, 
+router.get("/logout", isAuthorized, async (req, res) => {
+    await User.updateOne(
+        {
+            _id: req.user._id, "sessions.token": req.user.currentToken
+        },
+        {
+            $set: {
+                "sessions.$.invalidated": true
+            }
+        }
+    );
+
+    return res.status(200).json({
+        message: "Successfully logged out!"
+    });
+});
+
+router.post("/status", isAuthorized, 
     check("status")
         .isBoolean()
-            .withMessage("Please provide a valid status"),
+            .withMessage("Please provide a valid status!"),
 async(req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -113,7 +136,7 @@ async(req, res) => {
      });
 });
 
-router.get("/status",notAuthenticated,
+router.get("/status", isNotAuthorized,
     check("email")
         .isEmail()
             .withMessage("Please provide a valid Email!")
@@ -147,7 +170,7 @@ async (req, res) => {
      });
 });
 
-router.post("/getUsers",authenticateToken, async(req,res) => {
+router.post("/getUsers", isAuthorized, async(req,res) => {
     const Users = await User.find({status: true, username: { $ne: req.user.username } },"username").exec();
 
     return res.status(200).json({
@@ -155,41 +178,94 @@ router.post("/getUsers",authenticateToken, async(req,res) => {
     });
 });
 
-router.get("/checkAccessToken",authenticateToken, (req, res) => {
+router.get("/checkAccessToken", isAuthorized, (req, res) => {
     return res.json({
         username: req.user.username,
         email: req.user.email
     }).status(200);
 });
 
-function authenticateToken(req, res, next) {
+export async function isAuthorized(req, res, next) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-    if (!token) return res.status(401).json({ info: "Not Authorized!" });
 
-    jwt.verify(token, Parameters.AccessTokenSecret, async (err, tokenData) => {
-        if (err) return res.status(403).json({ errors: [{ msg: "Access Token Invalid or Expired!" }] });
-        req.user = await User.findOne({ _id: tokenData._id });
+    if (!token) {
+        return res.status(401).json({ info: "Not Authorized!" });
+    }
 
-        next();
+    let tokenData;
+    try {
+        tokenData = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+        return res.status(403).json({
+            errors: [
+                {
+                    msg: "Access Token Invalid or Expired!"
+                }
+            ]
+        });
+    }
+
+    let foundUser = await User.findOne({ _id: tokenData._id });
+
+    req.user = foundUser;
+
+    if (!req.user) {
+        return res.status(403).json({
+            errors: [
+                {
+                    msg: "Access Token Invalid or Expired!"
+                }
+            ]
+        });
+    }
+
+    let sessionInvalidated = false;
+    foundUser.sessions.every(session => {
+        if (session.token === token) {
+            if (session.invalidated) {
+                sessionInvalidated = true;
+                return false;
+            }
+        }
+
+        return true;
     });
+
+    if (sessionInvalidated) {
+        return res.status(403).json({
+            errors: [
+                {
+                    msg: "Access Token Invalid or Expired!"
+                }
+            ]
+        });
+    }
+
+    req.user.currentToken = token;
+
+    return next();
 }
 
-function notAuthenticated(req, res, next) {
+export function isNotAuthorized(req, res, next) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-    if (token) return res.status(401).json({ info: "Not Authorized!" });
+    if (token){
+        return res.status(401).json({ info: "Not Authorized!" });
+    }
 
-    next();
+    return next();
 }
 
 async function generateHash(rawPassword) {
-    const salt = await bcrypt.genSalt(Parameters.Saltrounds);
+    const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(rawPassword, salt);
 }
 
 async function compareHash(hash, text) {
     return await bcrypt.compare(text, hash);
 }
+
+router.use("/sessions", sessionsRouter);
 
 export default router;

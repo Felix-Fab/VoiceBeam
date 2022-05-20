@@ -33,3 +33,9 @@ replay_pid*
 # Jetbrains
 */.idea/**
 build.gradle
+
+# VS-Code
+.vscode/
+
+# Environment Variable
+.env

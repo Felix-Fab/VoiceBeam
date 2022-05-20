@@ -1,29 +1,32 @@
+import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import startCronJobs from "./cronJobs.js";
 
-import Users from "./routers/manager.js";
-import Messages from "./routers/messages.js";
+import AuthRouter from "./routers/auth.js";
+import MessagesRouter from "./routers/messages.js";
+
 import WebSocketServer from "./routers/WebSocketServer.js";
-import Parameters from './Parameters.js';
+
 import Logger from "./classes/Logger.js";
 
 console.clear();
-await mongoose.connect(Parameters.DBURL).then(() => Logger.writeServerLog("",`Connetect to DB "${Parameters.DBURL}"!`));
+await mongoose.connect(process.env.DB_URL).then(() => Logger.writeServerLog("",`Connetect to DB "${process.env.DB_URL}"!`));
 
-const RestAPIApp = express();
+startCronJobs();
 
-RestAPIApp.use(express.json());
+const api = express();
 
-RestAPIApp.use(cors())
+api.use(express.json());
 
-RestAPIApp.use("/manager",Users);
-RestAPIApp.use("/messages",Messages);
+api.use(cors());
 
-RestAPIApp.listen(Parameters.ApiPort,() => {
-    Logger.writeServerLog("",`API running on Port ${Parameters.ApiPort}...`);
+api.use("/auth", AuthRouter);
+api.use("/messages", MessagesRouter);
+
+api.listen(process.env.API_PORT, () => {
+    Logger.writeServerLog("", `API running on Port ${process.env.API_PORT}...`);
 });
 
-if(Parameters.StartWebSocket){
-    new WebSocketServer();
-}
+new WebSocketServer();

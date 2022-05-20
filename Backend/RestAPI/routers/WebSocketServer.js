@@ -1,14 +1,10 @@
 import fetch from "node-fetch";
 import { Server } from "socket.io";
-import '../Parameters.js';
-import Parameters from "../Parameters.js";
 import 'colors';
 import Logger from "../classes/Logger.js";
 
 export default class WebSocketServer{
-
-    constructor(){
-
+    constructor() {
         this.Sockets = [];
 
         this.server = new Server({cors: {
@@ -19,7 +15,9 @@ export default class WebSocketServer{
 
             const authorization = socket.handshake.headers['authorization'];
 
-            fetch(`http://127.0.0.1:${Parameters.ApiPort}/manager/checkAccessToken`, {
+            // TODO: Do not use static IP here
+            // TODO: Do not fetch here, use a function instead.
+            fetch(`http://127.0.0.1:${process.env.API_PORT}/auth/checkAccessToken`, {
                 method: 'GET',
                 headers: {
                     Authorization: authorization
@@ -52,8 +50,8 @@ export default class WebSocketServer{
             })
         });
     
-        this.server.listen(Parameters.WebSocketPort);
+        this.server.listen(process.env.WEBSOCKET_PORT);
 
-        Logger.writeServerLog("",`WebSocket running on Port ${Parameters.WebSocketPort}...`)
+        Logger.writeServerLog("",`WebSocket running on Port ${process.env.WEBSOCKET_PORT}...`)
     }
 }

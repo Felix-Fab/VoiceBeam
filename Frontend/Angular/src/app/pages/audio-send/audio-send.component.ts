@@ -12,38 +12,36 @@ import {WebsocketService} from "src/app/services/WebSocket/websocket.service";
 })
 export class AudioSendComponent implements OnInit {
   recorder: any;
+  audioChunks: any;
 
   constructor(private _webSocket: WebsocketService, private location:Location) {
-    this.recorder = null;
+    // Empty
   }
 
   async ngOnInit(): Promise<void> {
-    let stream = await navigator.mediaDevices.getUserMedia({audio:true, video: false});
-    this.recorder = new RecordRTCPromisesHandler(stream, {
-      type: 'audio'
-    });
-
     document.getElementById("ButtonSend")!.addEventListener('mousedown', (event) => {
-      this.recorder.startRecording();
+      console.log("Recording...");
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          this.recorder = new MediaRecorder(stream);
+          this.recorder.start();
+
+          this.audioChunks = [];
+
+          this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
+            this.audioChunks.push(event.data);
+          });
+        });
     });
 
     document.getElementById("ButtonSend")!.addEventListener('mouseup', async (event) => {
-      await this.recorder.stopRecording();
-
-      let AudioBlob = await this.recorder.getBlob();
-
-      var Data = {
-        Key: "message",
-        /* TODO: This needs to get set server-side! Very insecure! */
-        from: localStorage.getItem("username"),
-        to: 'admin',
-        data: await AudioBlob.text()
-      }
-
-      this._webSocket.send(JSON.stringify(Data));
-
-      console.log("***Audio Blob Sended");
-
+      this.recorder.addEventListener("stop", () => {
+        const audioBlob = new Blob(this.audioChunks);
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+      });
+      this.recorder.stop();
     });
   }
 }

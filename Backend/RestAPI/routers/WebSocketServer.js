@@ -15,7 +15,6 @@ export default class WebSocketServer{
 
             const authorization = socket.handshake.headers['authorization'];
 
-            // TODO: Do not use static IP here
             // TODO: Do not fetch here, use a function instead.
             fetch(`http://127.0.0.1:${process.env.API_PORT}/auth/checkAccessToken`, {
                 method: 'GET',

@@ -35,10 +35,19 @@ export class AudioSendComponent implements OnInit {
     });
 
     document.getElementById("ButtonSend")!.addEventListener('mouseup', async (event) => {
+      if (typeof this.recorder === "undefined") {
+        return;
+      }
+
       this.recorder.addEventListener("stop", () => {
         const audioBlob = new Blob(this.audioChunks);
+        if (audioBlob.size === 0) {
+          return;
+        }
+
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
+        console.log()
         audio.play();
       });
       this.recorder.stop();

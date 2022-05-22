@@ -12,7 +12,6 @@ export default class WebSocketServer{
         }});
     
         this.server.on('connection', (socket) => {
-
             const authorization = socket.handshake.headers['authorization'];
 
             // TODO: Do not fetch here, use a function instead.

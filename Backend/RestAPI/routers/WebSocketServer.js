@@ -2,6 +2,8 @@ import fetch from "node-fetch";
 import { Server } from "socket.io";
 import 'colors';
 import Logger from "../classes/Logger.js";
+import Parameter from "../Parameters.js";
+import Parameters from "../Parameters.js";
 
 export default class WebSocketServer{
     constructor() {
@@ -15,7 +17,7 @@ export default class WebSocketServer{
             const authorization = socket.handshake.headers['authorization'];
 
             // TODO: Do not fetch here, use a function instead.
-            fetch(`http://127.0.0.1:${process.env.API_PORT}/auth/checkAccessToken`, {
+            fetch(`http://127.0.0.1:${Parameters.ApiPort}/auth/checkAccessToken`, {
                 method: 'GET',
                 headers: {
                     Authorization: authorization
@@ -33,12 +35,26 @@ export default class WebSocketServer{
             });
 
             socket.on("sendDataToServer", (data) => {
-                console.log("Client Data Received");
-                var JsonData = JSON.parse(data);
-
                 this.Sockets.forEach(element => {
-                    if(element.username == JsonData.to){
-                        element.emit('SendDataToClient',JsonData);
+                    if(element.username == data.to){
+
+                    fetch(`http://127.0.0.1:${Parameters.ApiPort}/messages/add`, {
+                        method: 'POST',
+                        body:{
+                            from: data.from,
+                            to: "Leon",
+                            audioLength: 0
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(json => {
+                        debugger;
+                    }).catch(error => {
+                        Logger.writeError("",`AddMesage Error: ${error}`);
+                    });
+
+                        element.emit('SendDataToClient',data);
+                        Logger.writeSuccess("WebSocket-",`Receive data from ${data.from} and forward it to ${data.to}`)
                     }
                 });
             });
@@ -48,8 +64,8 @@ export default class WebSocketServer{
             })
         });
     
-        this.server.listen(process.env.WEBSOCKET_PORT);
+        this.server.listen(Parameters.WebSocketPort);
 
-        Logger.writeServerLog("",`WebSocket running on Port ${process.env.WEBSOCKET_PORT}...`)
+        Logger.writeServerLog("",`WebSocket running on Port ${Parameters.WebSocketPort}...`)
     }
 }

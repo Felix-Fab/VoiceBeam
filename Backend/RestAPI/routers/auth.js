@@ -5,6 +5,7 @@ import User from "../models/user.js";
 import moment from "moment";
 import jwt from "jsonwebtoken"
 import sessionsRouter from "./sessions.js";
+import Parameters from "../Parameters.js";
 
 const router = Router();
 
@@ -79,7 +80,7 @@ async (req, res) => {
 
     // TODO: We need a longer token time maybe 30 days?
     //       This should solve the issue of reauthenticating everytime you open the app.
-    const accessToken = jwt.sign({ _id: foundUser._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign({ _id: foundUser._id }, Parameters.AccessTokenSecret, { expiresIn: "15m" });
 
     foundUser.sessions.push({
         token: accessToken,
@@ -195,7 +196,7 @@ export async function isAuthorized(req, res, next) {
 
     let tokenData;
     try {
-        tokenData = jwt.verify(token, process.env.JWT_SECRET);
+        tokenData = jwt.verify(token, Parameters.AccessTokenSecret);
     } catch {
         return res.status(403).json({
             errors: [

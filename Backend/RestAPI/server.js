@@ -10,9 +10,10 @@ import MessagesRouter from "./routers/messages.js";
 import WebSocketServer from "./routers/WebSocketServer.js";
 
 import Logger from "./classes/Logger.js";
+import Parameters from "./Parameters.js";
 
 console.clear();
-await mongoose.connect(process.env.DB_URL).then(() => Logger.writeServerLog("",`Connetect to DB "${process.env.DB_URL}"!`));
+await mongoose.connect(Parameters.DBURL).then(() => Logger.writeServerLog("",`Connetect to DB "${Parameters.DBURL}"!`));
 
 startCronJobs();
 
@@ -25,8 +26,10 @@ api.use(cors());
 api.use("/auth", AuthRouter);
 api.use("/messages", MessagesRouter);
 
-api.listen(process.env.API_PORT, () => {
-    Logger.writeServerLog("", `API running on Port ${process.env.API_PORT}...`);
+api.listen(Parameters.ApiPort, () => {
+    Logger.writeServerLog("", `API running on Port ${Parameters.ApiPort}...`);
 });
 
-new WebSocketServer();
+if(Parameters.StartWebSocket){
+    new WebSocketServer();
+}

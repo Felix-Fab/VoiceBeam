@@ -5,6 +5,9 @@
             <span class="material-icons">account_circle</span>
         </div>
     </div>
+    <div class="message" *ngFor="let message of MessageHistory">
+        {{message.from}} | {{message.to}} | {{message.audioLength}}
+    </div>
 </div>
 <div id="bottom-container">
     <div id="content">

@@ -11,7 +11,7 @@ import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import {WebsocketService} from "src/app/services/WebSocket/websocket.service";
 
 interface Messages{
-  Message: [
+  messages: [
     
   ]
 }
@@ -27,6 +27,10 @@ interface Message{
   styleUrls: ['./audio-send.component.css']
 })
 export class AudioSendComponent implements OnInit {
+  MessageHistory: {from: string, to:string, audioLength:number}[] = [
+
+  ];
+
   recorder: any;
   audioChunks: any;
 
@@ -68,6 +72,7 @@ export class AudioSendComponent implements OnInit {
         var data = {
           from: localStorage.getItem("username"),
           to: localStorage.getItem("username"),
+          accessToken: localStorage.getItem("accessToken"),
           data: audioBlob
         }
 
@@ -78,6 +83,11 @@ export class AudioSendComponent implements OnInit {
       this.recorder.stop();
     });
 
+    this.loadHistory();
+  }
+
+  loadHistory() {
+    
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
@@ -89,7 +99,7 @@ export class AudioSendComponent implements OnInit {
 
     this.http.post<Messages>(Http.getAPIUrl() + "/messages/getMessages", body, {headers}).subscribe({
       next: data => {
-        debugger;
+        this.MessageHistory = data.messages;
       },
       error: error => {
         if(error.status === 400 || error.status === 401){

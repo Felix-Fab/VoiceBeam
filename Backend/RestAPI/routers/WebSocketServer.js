@@ -40,6 +40,9 @@ export default class WebSocketServer{
 
                     fetch(`http://127.0.0.1:${Parameters.ApiPort}/messages/add`, {
                         method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${data.accessToken}`
+                        },
                         body:{
                             from: data.from,
                             to: "Leon",

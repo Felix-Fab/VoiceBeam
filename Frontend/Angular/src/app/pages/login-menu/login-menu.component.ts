@@ -6,6 +6,7 @@ import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { Router } from '@angular/router';
 import { WebsocketService } from "src/app/services/WebSocket/websocket.service";
 import Http from 'src/app/classes/Http';
+import { timer } from 'rxjs';
 
 interface Config{
   username: string,
@@ -19,6 +20,7 @@ interface Config{
   styleUrls: ['./login-menu.component.css']
 })
 export class LoginMenuComponent implements OnInit {
+  Subscription: any;
 
   constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService) { }
 
@@ -44,7 +46,10 @@ export class LoginMenuComponent implements OnInit {
         localStorage.setItem("accessToken", data.accessToken);
 
         this._webSocket.init();
-        debugger;
+
+        const TimerTask = timer(0,1000);
+        this.Subscription = TimerTask.subscribe(() => {
+      	});
 
         this.router.navigate(["/UserMenu"]);
 

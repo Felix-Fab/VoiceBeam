@@ -6,10 +6,10 @@
         <div id="block">
             <h1>VoiceBeam</h1>
             <div id="register-area">
-                <input type="text" name="password" placeholder="Username" style="margin-bottom: 12px;">
-                <input type="email" name="email" placeholder="Email" style="margin-bottom: 12px;">
-                <input type="password" name="passwort" placeholder="Password">
-                <button id="create-button">Create</button>
+                <input id="username" type="text" name="password" placeholder="Username" style="margin-bottom: 12px;">
+                <input id="email" type="email" name="email" placeholder="Email" style="margin-bottom: 12px;">
+                <input id="password" type="password" name="passwort" placeholder="Password">
+                <button id="create-button" (click)="createUser()">Create</button>
             </div>
         </div>
     </div>

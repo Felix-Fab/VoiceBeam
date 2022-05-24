@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import Http from 'src/app/classes/Http';
+import { timer, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 interface Users{
@@ -22,6 +23,7 @@ interface User{
   styleUrls: ['./user-menu.component.css']
 })
 export class UserMenuComponent implements OnInit {
+  Subscription:any
   users: { username: string}[] = [
 
   ];
@@ -30,6 +32,18 @@ export class UserMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const TimerTask = timer(0,5000);
+    this.Subscription = TimerTask.subscribe(() => {
+      this.updateUserMenu();
+      console.log("run");
+    });
+  }
+
+  ngOnDestroy() {    
+    this.Subscription.unsubscribe();
+}
+
+  updateUserMenu(){
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem("accessToken")}`

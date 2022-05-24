@@ -23,6 +23,7 @@
     "@capacitor/android": "^3.5.1",
     "@capacitor/core": "^3.5.1",
     "@capacitor/ios": "^3.5.1",
+    "angular-audio-context": "^32.0.9",
     "jquery": "^3.6.0",
     "material-icons": "^1.10.9",
     "net": "^1.0.2",

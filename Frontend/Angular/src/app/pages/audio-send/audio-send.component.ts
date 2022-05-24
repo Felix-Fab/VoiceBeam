@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ReadVarExpr } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { RecordRTCPromisesHandler } from 'recordrtc';
 import "src/app/classes/ArrayBufferConverter";
 import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
@@ -34,7 +35,7 @@ export class AudioSendComponent implements OnInit {
   recorder: any;
   audioChunks: any;
 
-  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog) {
+  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router) {
     // Empty
   }
 
@@ -120,5 +121,9 @@ export class AudioSendComponent implements OnInit {
         }
       }
     });
+  }
+
+  navigateToUserMenu(){
+    this.router.navigate(["/UserMenu"]);
   }
 }

@@ -11,8 +11,8 @@ const routes: Routes = [
   { path:'LoginMenu', component: LoginMenuComponent},
   { path: 'LoginMenu/register', component: LoginRegisterComponent},
   { path: 'UserMenu', component: UserMenuComponent},
-  { path: 'AudioSend/:username', component: AudioSendComponent},
-  { path: 'SettingsMeni', component: SettingsMenuComponent}
+  { path: 'AudioSend/:username',component: AudioSendComponent},
+  { path: 'SettingsMenu', component: SettingsMenuComponent}
 ];
 
 @NgModule({

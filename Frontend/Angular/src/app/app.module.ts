@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import { MatDialogModule, } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AudioContextModule } from 'angular-audio-context';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,7 +33,8 @@ import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.compo
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    AudioContextModule.forRoot('balanced')
   ],
   exports: [],
   providers: [],

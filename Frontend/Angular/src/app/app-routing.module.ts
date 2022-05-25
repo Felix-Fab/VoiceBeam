@@ -11,7 +11,7 @@ const routes: Routes = [
   { path:'LoginMenu', component: LoginMenuComponent},
   { path: 'LoginMenu/register', component: LoginRegisterComponent},
   { path: 'UserMenu', component: UserMenuComponent},
-  { path: 'AudioSend', component: AudioSendComponent},
+  { path: 'AudioSend/:username', component: AudioSendComponent},
   { path: 'SettingsMeni', component: SettingsMenuComponent}
 ];
 

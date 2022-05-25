@@ -74,6 +74,6 @@ export class UserMenuComponent implements OnInit {
   }
 
   onClickUser(username: string){
-    this.router.navigateByUrl('/AudioSend', { state: { username: username } });
+    this.router.navigate(["/AudioSend", username]);
   }
 }

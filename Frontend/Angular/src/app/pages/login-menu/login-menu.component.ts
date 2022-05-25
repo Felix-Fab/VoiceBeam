@@ -7,8 +7,10 @@ import { Router } from '@angular/router';
 import { WebsocketService } from "src/app/services/WebSocket/websocket.service";
 import Http from 'src/app/classes/Http';
 import { timer } from 'rxjs';
+import CheckAudioDeviceTimer from 'src/app/timer/CheckAudioDeviceTimer';
+import { AudioContext } from 'angular-audio-context';
 
-interface Config{
+interface LoginConfig{
   username: string,
   email: string,
   accessToken: string
@@ -22,9 +24,10 @@ interface Config{
 export class LoginMenuComponent implements OnInit {
   Subscription: any;
 
-  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService) { }
+  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService, private audioContext: AudioContext) { }
 
   ngOnInit(): void {
+    CheckAudioDeviceTimer.stopCheckStatus(navigator);
   }
 
   onButtonLoginClick(event: MouseEvent){
@@ -39,7 +42,7 @@ export class LoginMenuComponent implements OnInit {
       email: EmailInput.value, password: PasswordInput.value
     }
 
-    this.http.post<Config>(Http.getAPIUrl() + "/auth/login", body, {headers}).subscribe({
+    this.http.post<LoginConfig>(Http.getAPIUrl() + "/auth/login", body, {headers}).subscribe({
       next: data => {
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
@@ -47,9 +50,7 @@ export class LoginMenuComponent implements OnInit {
 
         this._webSocket.init();
 
-        const TimerTask = timer(0,1000);
-        this.Subscription = TimerTask.subscribe(() => {
-      	});
+        CheckAudioDeviceTimer.startCheckStatus(navigator,this.http,this.dialog);
 
         this.router.navigate(["/UserMenu"]);
 

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ReadVarExpr } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecordRTCPromisesHandler } from 'recordrtc';
 import "src/app/classes/ArrayBufferConverter";
 import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
@@ -35,7 +35,7 @@ export class AudioSendComponent implements OnInit {
   recorder: any;
   audioChunks: any;
 
-  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router) {
+  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router, private route: ActivatedRoute) {
     // Empty
   }
 
@@ -95,7 +95,7 @@ export class AudioSendComponent implements OnInit {
     }
 
     const body = {
-      username1: localStorage.getItem("username"), username2: window.history.state.username
+      username1: localStorage.getItem("username"), username2: this.route.snapshot.paramMap.get("username")
     }
 
     this.http.post<Messages>(Http.getAPIUrl() + "/messages/getMessages", body, {headers}).subscribe({

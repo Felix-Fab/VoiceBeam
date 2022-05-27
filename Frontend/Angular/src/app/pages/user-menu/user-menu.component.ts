@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog} from '@angular/material/dialog';
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
@@ -22,7 +22,7 @@ interface User{
   templateUrl: './user-menu.component.html',
   styleUrls: ['./user-menu.component.css']
 })
-export class UserMenuComponent implements OnInit {
+export class UserMenuComponent implements OnInit,OnDestroy {
   Subscription:any
   users: { username: string}[] = [
 
@@ -35,13 +35,12 @@ export class UserMenuComponent implements OnInit {
     const TimerTask = timer(0,5000);
     this.Subscription = TimerTask.subscribe(() => {
       this.updateUserMenu();
-      console.log("run");
     });
   }
 
   ngOnDestroy() {    
     this.Subscription.unsubscribe();
-}
+  }
 
   updateUserMenu(){
     const headers = {

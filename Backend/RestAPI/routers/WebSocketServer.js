@@ -36,18 +36,27 @@ export default class WebSocketServer{
 
             socket.on("sendDataToServer", (data) => {
                 this.Sockets.forEach(element => {
+                    debugger;
+
                     if(element.username == data.to){
 
+                    debugger;
+                    console.log("Hallo");
+
+                    var BodyData = {
+                        from: data.from,
+                        to: data.to,
+                        audioLength: 0
+                    };
+
+                    debugger;
+
                     fetch(`http://127.0.0.1:${Parameters.ApiPort}/messages/add`, {
-                        method: 'POST',
+                        method: 'post',
+                        body: JSON.stringify(BodyData),
                         headers: {
                             Authorization: `Bearer ${data.accessToken}`
                         },
-                        body:{
-                            from: data.from,
-                            to: "Leon",
-                            audioLength: 0
-                        }
                     })
                     .then(res => res.json())
                     .then(json => {

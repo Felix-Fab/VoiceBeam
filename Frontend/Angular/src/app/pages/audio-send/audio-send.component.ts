@@ -1,10 +1,11 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ReadVarExpr } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordRTCPromisesHandler } from 'recordrtc';
+import { timer } from 'rxjs';
 import "src/app/classes/ArrayBufferConverter";
 import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
 import Http from 'src/app/classes/Http';
@@ -27,20 +28,22 @@ interface Message{
   templateUrl: './audio-send.component.html',
   styleUrls: ['./audio-send.component.css']
 })
-export class AudioSendComponent implements OnInit {
-  MessageHistory: {from: string, to:string, audioLength:number}[] = [
+export class AudioSendComponent implements OnInit,OnDestroy {
+  MessageHistory: {from: string, to:string, audioLength:number, class: string, icon: string, text: string}[] = [
 
   ];
 
   recorder: any;
   audioChunks: any;
 
+  Subscription:any
+
   constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router, private route: ActivatedRoute) {
     // Empty
   }
 
   async ngOnInit(): Promise<void> {
-    const To = window.history.state.username;
+    const To = this.route.snapshot.paramMap.get("username")
 
     document.getElementById("ButtonSend")!.addEventListener('mousedown', (event) => {
       console.log("Recording...");
@@ -72,7 +75,7 @@ export class AudioSendComponent implements OnInit {
 
         var data = {
           from: localStorage.getItem("username"),
-          to: localStorage.getItem("username"),
+          to: To,
           accessToken: localStorage.getItem("accessToken"),
           data: audioBlob
         }
@@ -84,7 +87,14 @@ export class AudioSendComponent implements OnInit {
       this.recorder.stop();
     });
 
-    this.loadHistory();
+    const TimerTask = timer(0,5000);
+    this.Subscription = TimerTask.subscribe(() => {
+      this.loadHistory();
+    });
+  }
+
+  ngOnDestroy() {    
+    this.Subscription.unsubscribe();
   }
 
   loadHistory() {
@@ -101,6 +111,18 @@ export class AudioSendComponent implements OnInit {
     this.http.post<Messages>(Http.getAPIUrl() + "/messages/getMessages", body, {headers}).subscribe({
       next: data => {
         this.MessageHistory = data.messages;
+
+        this.MessageHistory.forEach(Message => {
+          if(Message.from == localStorage.getItem("username")){
+            Message.class = "MessageLeft";
+            Message.icon = "send";
+            Message.text = "Gesendet";
+          }else{
+            Message.class = "MessageRight";
+            Message.icon = "reply";
+            Message.text = "Empfangen";
+          }
+        });
       },
       error: error => {
         if(error.status === 400 || error.status === 401){

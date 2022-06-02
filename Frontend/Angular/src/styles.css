@@ -26,7 +26,11 @@ body {
   flex-direction: row;
 }
 
-router-outlet + *  {
+router-outlet *  {
+}
+
+.noselect {
+  user-select: none;-moz-user-select: none; -webkit-user-select: none;-ms-user-select: none;
 }
 
 /* Text */

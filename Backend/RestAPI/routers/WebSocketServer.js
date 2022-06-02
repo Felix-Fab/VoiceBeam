@@ -2,16 +2,28 @@ import fetch from "node-fetch";
 import { Server } from "socket.io";
 import 'colors';
 import Logger from "../classes/Logger.js";
-import Parameter from "../Parameters.js";
 import Parameters from "../Parameters.js";
+import https from "https";
+import fs from "fs";
 
 export default class WebSocketServer{
     constructor() {
         this.Sockets = [];
 
-        this.server = new Server({cors: {
-            origin: "*"
-        }});
+        if(Parameters.Status == "Remote"){
+            this.httpsServer = https.createServer({
+                key: fs.readFileSync(Parameters.SSL_privateKey),
+                cert: fs.readFileSync(Parameters.SSL_certificate)
+            });
+
+            this.server = new Server(this.httpsServer,{cors: {
+                origin: "*"
+            }});
+        }else{
+            this.server = new Server({cors: {
+                origin: "*"
+            }});
+        }
     
         this.server.on('connection', (socket) => {
             const authorization = socket.handshake.headers['authorization'];
@@ -75,8 +87,12 @@ export default class WebSocketServer{
                 this.Sockets.filter(socket => socket.username != username);
             })
         });
-    
-        this.server.listen(Parameters.WebSocketPort);
+
+        if(Parameters.Status == "Remote"){
+            this.httpsServer.listen(Parameters.WebSocketPort);
+        }else{
+            this.server.listen(Parameters.WebSocketPort);
+        }
 
         Logger.writeServerLog("",`WebSocket running on Port ${Parameters.WebSocketPort}...`)
     }

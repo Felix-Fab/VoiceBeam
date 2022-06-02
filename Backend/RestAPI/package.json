@@ -19,6 +19,8 @@
     "express-jwt": "^6.1.1",
     "express-validator": "^6.14.0",
     "express-ws": "^5.0.2",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
     "moment": "^2.29.3",
     "mongoose": "^6.2.4",
     "net": "^1.0.2",

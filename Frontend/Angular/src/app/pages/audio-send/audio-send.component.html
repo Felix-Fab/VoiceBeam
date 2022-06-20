@@ -1,11 +1,11 @@
 <div id="top-container">
     <div id="user-bar">
         <span (click)="navigateToUserMenu()" class="material-icons">arrow_back</span>
-        <div id="currentuser">Name
+        <div id="currentuser">{{To}}
             <span class="material-icons">account_circle</span>
         </div>
     </div>
-    <div style="width: 100%; height:100%; padding: 0px">
+    <div style="width: 100%; height:calc(100% - 60px); padding: 0px; overflow: auto;">
         <div class="{{message.class}}" *ngFor="let message of MessageHistory">
             <span class="material-icons">{{message.icon}}</span> {{message.text}}
         </div>

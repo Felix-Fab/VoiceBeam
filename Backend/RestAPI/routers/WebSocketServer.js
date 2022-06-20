@@ -5,6 +5,8 @@ import Logger from "../classes/Logger.js";
 import Parameters from "../Parameters.js";
 import https from "https";
 import fs from "fs";
+import jwt from "jsonwebtoken"
+import User from "../models/user.js";
 
 export default class WebSocketServer{
     constructor() {
@@ -25,26 +27,30 @@ export default class WebSocketServer{
             }});
         }
     
-        this.server.on('connection', (socket) => {
+        this.server.on('connection',async (socket) => {
             const authorization = socket.handshake.headers['authorization'];
 
-            // TODO: Do not fetch here, use a function instead.
-            fetch(`http://127.0.0.1:${Parameters.ApiPort}/auth/checkAccessToken`, {
-                method: 'GET',
-                headers: {
-                    Authorization: authorization
-                }
-            })
-            .then(res => res.json())
-            .then(json => {
-                socket.username = json.username;
-                this.Sockets.push(socket);
-
-                Logger.writeSuccess("WebSocket-",`${socket.username} connected`);
-            }).catch(error => {
+            let tokenData;
+            try {
+                tokenData = jwt.verify(authorization, Parameters.AccessTokenSecret);
+            } catch(error) {
                 Logger.writeWarning("WebSocket-",`Unknown Client connected`);
                 socket.disconnect();
-            });
+                console.log(error);
+                return;
+            }
+
+            let foundUser = await User.findOne({ _id: tokenData._id });
+    
+            foundUser.status = true;
+
+            await foundUser.save();
+
+            socket.username = foundUser.username;
+            socket.accessToken = authorization;
+            this.Sockets.push(socket);
+
+            Logger.writeSuccess("WebSocket-",`${socket.username} connected`);
 
             socket.on("sendDataToServer", (data) => {
                 this.Sockets.forEach(element => {
@@ -83,8 +89,31 @@ export default class WebSocketServer{
                 });
             });
 
-            socket.on("ClientDisconnect", (username) => {
+            socket.on("ClientDisconnect",async (username) => {
+                
+                this.socket.forEach(async (element) => {
+                    if(element.username == username){
+                        let tokenData;
+
+                        try {
+                            tokenData = jwt.verify(element.accessToken, Parameters.AccessTokenSecret);
+                        } catch {
+                            Logger.writeError("WebSocket-",`Socket AccesToken Error`);
+                            socket.disconnect();
+                            return;
+                        }
+
+                        let foundUser = await User.findOne({ _id: tokenData._id });
+
+                        foundUser.status = false;
+
+                        await foundUser.save();
+                    }
+                });
+
                 this.Sockets.filter(socket => socket.username != username);
+
+                Logger.writeInfo("WebSocket-","Socket successful disconnected");
             })
         });
 

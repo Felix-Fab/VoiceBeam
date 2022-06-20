@@ -37,55 +37,19 @@ export class AudioSendComponent implements OnInit,OnDestroy {
   audioChunks: any;
 
   Subscription:any
+  To: string | null;
 
-  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router, private route: ActivatedRoute) {
-    // Empty
+  constructor(public _webSocket: WebsocketService,private http: HttpClient,private dialog:MatDialog,private router: Router, public route: ActivatedRoute) {
+    this.To = route.snapshot.paramMap.get("username")
   }
 
   async ngOnInit(): Promise<void> {
-    const To = this.route.snapshot.paramMap.get("username")
 
-    document.getElementById("ButtonSend")!.addEventListener('mousedown', (event) => {
-      console.log("Recording...");
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          this.recorder = new MediaRecorder(stream);
-          this.recorder.start();
+    document.getElementById("ButtonSend")!.addEventListener('mousedown', this.ButtonSendDown);
+    document.getElementById("ButtonSend")!.addEventListener('touchstart', this.ButtonSendDown);
 
-          this.audioChunks = [];
-
-          this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
-            this.audioChunks.push(event.data);
-          });
-        });
-    });
-
-    document.getElementById("ButtonSend")!.addEventListener('mouseup', async (event) => {
-
-      if (typeof this.recorder === "undefined") {
-        return;
-      }
-
-      this.recorder.addEventListener("stop", () => {
-        console.log(this.audioChunks);
-        const audioBlob = new Blob(this.audioChunks);
-        if (audioBlob.size === 0) {
-          return;
-        }
-
-        var data = {
-          from: localStorage.getItem("username"),
-          to: To,
-          accessToken: localStorage.getItem("accessToken"),
-          data: audioBlob
-        }
-
-        debugger;
-
-        this._webSocket.send(data);
-      });
-      this.recorder.stop();
-    });
+    document.getElementById("ButtonSend")!.addEventListener('mouseup', this.ButtonSendUp);
+    document.getElementById("ButtonSend")!.addEventListener('touchend', this.ButtonSendUp);
 
     const TimerTask = timer(0,5000);
     this.Subscription = TimerTask.subscribe(() => {
@@ -142,6 +106,50 @@ export class AudioSendComponent implements OnInit,OnDestroy {
           console.error('An error occurred:', error.error);
         }
       }
+    });
+  }
+
+  async ButtonSendUp(){
+
+    if (typeof this.recorder === "undefined") {
+      return;
+    }
+
+    this.recorder.addEventListener("stop", () => {
+      console.log(this.audioChunks);
+      const audioBlob = new Blob(this.audioChunks);
+      if (audioBlob.size === 0) {
+        return;
+      }
+
+      var data = {
+        from: localStorage.getItem("username"),
+        to: this.To,
+        accessToken: localStorage.getItem("accessToken"),
+        data: audioBlob
+      }
+
+      debugger;
+
+      this._webSocket.send(data);
+    });
+    this.recorder.stop();
+
+    debugger;
+  }
+
+  async ButtonSendDown(){
+  console.log("Recording...");
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      this.recorder = new MediaRecorder(stream);
+      this.recorder.start();
+
+      this.audioChunks = [];
+
+      this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
+        this.audioChunks.push(event.data);
+      });
     });
   }
 

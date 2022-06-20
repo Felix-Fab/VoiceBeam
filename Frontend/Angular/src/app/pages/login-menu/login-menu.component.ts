@@ -6,8 +6,6 @@ import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { Router } from '@angular/router';
 import { WebsocketService } from "src/app/services/WebSocket/websocket.service";
 import Http from 'src/app/classes/Http';
-import { timer } from 'rxjs';
-import CheckAudioDeviceTimer from 'src/app/timer/CheckAudioDeviceTimer';
 import { AudioContext } from 'angular-audio-context';
 
 interface LoginConfig{
@@ -24,10 +22,10 @@ interface LoginConfig{
 export class LoginMenuComponent implements OnInit {
   Subscription: any;
 
-  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService, private audioContext: AudioContext) { }
+  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private audioContext: AudioContext, private _webSocket: WebsocketService) { }
 
   ngOnInit(): void {
-    CheckAudioDeviceTimer.stopCheckStatus(navigator);
+    this._webSocket.disconnect();
   }
 
   onButtonLoginClick(event: MouseEvent){
@@ -49,8 +47,6 @@ export class LoginMenuComponent implements OnInit {
         localStorage.setItem("accessToken", data.accessToken);
 
         this._webSocket.init();
-
-        CheckAudioDeviceTimer.startCheckStatus(navigator,this.http,this.dialog);
 
         this.router.navigate(["/UserMenu"]);
 

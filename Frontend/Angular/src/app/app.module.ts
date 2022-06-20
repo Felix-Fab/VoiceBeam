@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MatDialogModule, } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AudioContextModule } from 'angular-audio-context';
@@ -37,7 +38,7 @@ import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.compo
     AudioContextModule.forRoot('balanced')
   ],
   exports: [],
-  providers: [],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -18,7 +18,7 @@ export class WebsocketService {
 
     this.websocket = io(Http.getWebSocketUrl(), {
       extraHeaders: {
-        Authorization: "Bearer " + localStorage.getItem("accessToken")
+        Authorization: `${localStorage.getItem("accessToken")}`
       }
     });
     console.log("Connecting to WebSocket...");
@@ -43,7 +43,14 @@ export class WebsocketService {
     });
   }
 
-   send(data:any){
+  disconnect(){
+    if(this.websocket != undefined){
+      this.websocket.disconnect();
+      console.log("Disconnected from WebSocket Server");
+    }
+  }
+
+  send(data:any){
      this.websocket.emit("sendDataToServer",data)
-   }
+  }
 }

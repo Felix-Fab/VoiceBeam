@@ -5,6 +5,7 @@ import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import Http from 'src/app/classes/Http';
 import { timer, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import * as $ from "jquery";
 
 interface Users{
   users: [
@@ -67,9 +68,18 @@ export class UserMenuComponent implements OnInit,OnDestroy {
               message: 'Access Token Invalid or Expired!'
             }
           });
+
+          this.router.navigate(["/LoginMenu"]);
         }
       }
     });
+
+    var NoUsersTag = $("#NoUsers")[0] as HTMLParagraphElement;
+    if(this.users.length <= 0){
+      NoUsersTag.hidden = false;
+    }else{
+      NoUsersTag.hidden = true;
+    }
   }
 
   onClickUser(username: string){

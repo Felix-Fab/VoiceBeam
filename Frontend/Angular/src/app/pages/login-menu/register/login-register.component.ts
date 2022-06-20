@@ -6,6 +6,7 @@ import * as $ from "jquery";
 import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { DialogInfo } from 'src/app/dialogs/Info/dialog-info';
 import { Router } from '@angular/router';
+import { WebsocketService } from 'src/app/services/WebSocket/websocket.service';
 
 interface Config{
   info: string,
@@ -18,9 +19,10 @@ interface Config{
 })
 export class LoginRegisterComponent implements OnInit {
 
-  constructor(private http: HttpClient, private dialog:MatDialog, private router: Router) { }
+  constructor(private http: HttpClient, private dialog:MatDialog, private router: Router, private _webSocket: WebsocketService) { }
 
   ngOnInit(): void {
+    this._webSocket.disconnect();
   }
 
   createUser(){

@@ -45,11 +45,93 @@ export class AudioSendComponent implements OnInit,OnDestroy {
 
   async ngOnInit(): Promise<void> {
 
-    document.getElementById("ButtonSend")!.addEventListener('mousedown', this.ButtonSendDown);
-    document.getElementById("ButtonSend")!.addEventListener('touchstart', this.ButtonSendDown);
+    document.getElementById("ButtonSend")!.addEventListener('mousedown', () => {
 
-    document.getElementById("ButtonSend")!.addEventListener('mouseup', this.ButtonSendUp);
-    document.getElementById("ButtonSend")!.addEventListener('touchend', this.ButtonSendUp);
+      console.log("Recording...");
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          this.recorder = new MediaRecorder(stream);
+          this.recorder.start();
+
+          this.audioChunks = [];
+
+          this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
+          this.audioChunks.push(event.data);
+        });
+      });
+    });
+
+    document.getElementById("ButtonSend")!.addEventListener('touchstart', () => {
+
+      console.log("Recording...");
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          this.recorder = new MediaRecorder(stream);
+          this.recorder.start();
+
+          this.audioChunks = [];
+
+          this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
+          this.audioChunks.push(event.data);
+        });
+      });
+    });
+
+    document.getElementById("ButtonSend")!.addEventListener('mouseup', () => {
+
+      if (typeof this.recorder === "undefined") {
+        return;
+      }
+  
+      this.recorder.addEventListener("stop", () => {
+        console.log(this.audioChunks);
+        const audioBlob = new Blob(this.audioChunks);
+        if (audioBlob.size === 0) {
+          return;
+        }
+  
+        var data = {
+          from: localStorage.getItem("username"),
+          to: this.To,
+          accessToken: localStorage.getItem("accessToken"),
+          data: audioBlob
+        }
+  
+        debugger;
+  
+        this._webSocket.send(data);
+      });
+      this.recorder.stop();
+
+    });
+
+    document.getElementById("ButtonSend")!.addEventListener('touchend', () => {
+
+      if (typeof this.recorder === "undefined") {
+        return;
+      }
+  
+      this.recorder.addEventListener("stop", () => {
+        console.log(this.audioChunks);
+        const audioBlob = new Blob(this.audioChunks);
+        if (audioBlob.size === 0) {
+          return;
+        }
+  
+        var data = {
+          from: localStorage.getItem("username"),
+          to: this.To,
+          accessToken: localStorage.getItem("accessToken"),
+          data: audioBlob
+        }
+  
+        debugger;
+  
+        this._webSocket.send(data);
+      });
+      this.recorder.stop();
+
+    });
 
     const TimerTask = timer(0,5000);
     this.Subscription = TimerTask.subscribe(() => {
@@ -106,50 +188,6 @@ export class AudioSendComponent implements OnInit,OnDestroy {
           console.error('An error occurred:', error.error);
         }
       }
-    });
-  }
-
-  async ButtonSendUp(){
-
-    if (typeof this.recorder === "undefined") {
-      return;
-    }
-
-    this.recorder.addEventListener("stop", () => {
-      console.log(this.audioChunks);
-      const audioBlob = new Blob(this.audioChunks);
-      if (audioBlob.size === 0) {
-        return;
-      }
-
-      var data = {
-        from: localStorage.getItem("username"),
-        to: this.To,
-        accessToken: localStorage.getItem("accessToken"),
-        data: audioBlob
-      }
-
-      debugger;
-
-      this._webSocket.send(data);
-    });
-    this.recorder.stop();
-
-    debugger;
-  }
-
-  async ButtonSendDown(){
-  console.log("Recording...");
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      this.recorder = new MediaRecorder(stream);
-      this.recorder.start();
-
-      this.audioChunks = [];
-
-      this.recorder.addEventListener("dataavailable", (event: { data: any; }) => {
-        this.audioChunks.push(event.data);
-      });
     });
   }
 

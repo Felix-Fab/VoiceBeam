@@ -1,5 +1,5 @@
 export default {
-    Status: "Local",
+    Status: "Remote",
     StartWebSocket: true,
     ApiPort: 3000,
     WebSocketPort: 8000,

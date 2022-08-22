@@ -52,6 +52,13 @@ export class UserMenuComponent implements OnInit,OnDestroy {
     this.http.post<Users>(Http.getAPIUrl() + "/auth/getUsers", {} , { headers }).subscribe({
       next: data => {
           this.users = data.users;
+
+          var NoUsersTag = $("#NoUsers")[0] as HTMLParagraphElement;
+          if(this.users.length <= 0){
+            NoUsersTag.hidden = false;
+          }else{
+            NoUsersTag.hidden = true;
+          }
       },
       error: error => {
         if(error.status === 401) {
@@ -73,13 +80,6 @@ export class UserMenuComponent implements OnInit,OnDestroy {
         }
       }
     });
-
-    var NoUsersTag = $("#NoUsers")[0] as HTMLParagraphElement;
-    if(this.users.length <= 0){
-      NoUsersTag.hidden = false;
-    }else{
-      NoUsersTag.hidden = true;
-    }
   }
 
   onClickUser(username: string){

@@ -45,6 +45,9 @@ export class AudioSendComponent implements OnInit,OnDestroy {
 
   async ngOnInit(): Promise<void> {
 
+    let scroll_to_bottom = document.getElementById('history') as HTMLElement;
+		scroll_to_bottom.scrollTop = scroll_to_bottom.scrollHeight;
+
     document.getElementById("ButtonSend")!.addEventListener('mousedown', () => {
 
       console.log("Recording...");
@@ -156,6 +159,7 @@ export class AudioSendComponent implements OnInit,OnDestroy {
 
     this.http.post<Messages>(Http.getAPIUrl() + "/messages/getMessages", body, {headers}).subscribe({
       next: data => {
+        
         this.MessageHistory = data.messages;
 
         this.MessageHistory.forEach(Message => {
@@ -171,21 +175,39 @@ export class AudioSendComponent implements OnInit,OnDestroy {
         });
       },
       error: error => {
-        if(error.status === 400 || error.status === 401){
-          this.dialog.open(DialogError, {
-            data:{
-              title: 'Login Error',
-              message: 'Invalid Credentials!'
-            }
-          });
-        }else{
-          this.dialog.open(DialogError, {
-            data: {
-              title: 'Login Error',
-              message: 'Unknown Error'
-            }
-          });
-          console.error('An error occurred:', error.error);
+
+        switch(error.status){
+          case 400 || 401:
+            this.dialog.open(DialogError, {
+              data:{
+                title: 'Login Error',
+                message: 'Invalid Credentials!'
+              }
+            });
+            break;
+
+          case 403:
+            this.dialog.open(DialogError, {
+              data:{
+                title: 'Update Error',
+                message: 'AccessToken Invalid'
+              }
+            });
+
+            this.router.navigate(["/LoginMenu"]);
+            break;
+
+            default:
+              this.dialog.open(DialogError, {
+                data: {
+                  title: 'Login Error',
+                  message: 'Unknown Error'
+                }
+              });
+              console.error('An error occurred:', error.error);
+
+              this.router.navigate(["/LoginMenu"]);
+              break;
         }
       }
     });

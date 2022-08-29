@@ -7,6 +7,7 @@ import https from "https";
 import fs from "fs";
 import jwt from "jsonwebtoken"
 import User from "../models/user.js";
+import { response } from "express";
 
 export default class WebSocketServer{
     constructor() {
@@ -41,7 +42,7 @@ export default class WebSocketServer{
             }
 
             let foundUser = await User.findOne({ _id: tokenData._id });
-    
+
             foundUser.status = true;
 
             await foundUser.save();
@@ -53,40 +54,48 @@ export default class WebSocketServer{
             Logger.writeSuccess("WebSocket-",`${socket.username} connected`);
 
             socket.on("sendDataToServer", (data) => {
-                this.Sockets.forEach(element => {
-                    debugger;
 
-                    if(element.username == data.to){
+                const SocketFind = this.Sockets.find(element => element.username == data.to);
 
-                    debugger;
-                    console.log("Hallo");
+                if(SocketFind != undefined){
 
                     var BodyData = {
                         from: data.from,
                         to: data.to,
                         audioLength: 0
                     };
-
-                    debugger;
-
+    
                     fetch(`http://127.0.0.1:${Parameters.ApiPort}/messages/add`, {
-                        method: 'post',
+                        method: 'POST',
                         body: JSON.stringify(BodyData),
                         headers: {
-                            Authorization: `Bearer ${data.accessToken}`
+                            authorization: `Bearer ${data.accessToken}`,
+                            'Content-Type': 'application/json'
                         },
                     })
-                    .then(res => res.json())
-                    .then(json => {
-                        debugger;
-                    }).catch(error => {
+                    .then((response) => {
+                        if(!response.ok){
+                            console.log(response.status);
+                        }else{
+                            console.log(response.status);
+                        }
+                    })
+                    .catch(error => {
                         Logger.writeError("",`AddMesage Error: ${error}`);
                     });
+                        
+                    SocketFind.emit('SendDataToClient',data);
+                    Logger.writeSuccess("WebSocket-",`Receive data from ${data.from} and forward it to ${data.to}`);
 
-                        element.emit('SendDataToClient',data);
-                        Logger.writeSuccess("WebSocket-",`Receive data from ${data.from} and forward it to ${data.to}`)
+                }else{
+                    var data = {
+                        status: 301,
+                        message: "Benutzer nicht verfügbar"
                     }
-                });
+
+                    socket.emit('ServerStatusResponse',data);
+                }
+
             });
 
             socket.on("ClientDisconnect",async (username) => {

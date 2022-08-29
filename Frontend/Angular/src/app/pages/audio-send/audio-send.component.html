@@ -5,7 +5,7 @@
             <span class="material-icons">account_circle</span>
         </div>
     </div>
-    <div style="width: 100%; height:calc(100% - 60px); padding: 0px; overflow: auto;">
+    <div id="history" style="width: 100%; height:calc(100% - 60px); padding: 0px; overflow: auto;">
         <div class="{{message.class}}" *ngFor="let message of MessageHistory">
             <span class="material-icons">{{message.icon}}</span> {{message.text}}
         </div>

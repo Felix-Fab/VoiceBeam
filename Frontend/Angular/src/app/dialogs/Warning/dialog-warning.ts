@@ -9,9 +9,10 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
     title = "";
     message = "";
+    
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any){
       this.title = data.title;
-        this.message = data.message;
+      this.message = data.message;
     }
   }

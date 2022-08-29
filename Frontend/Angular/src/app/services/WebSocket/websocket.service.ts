@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import ArrayBufferConverter from 'src/app/classes/ArrayBufferConverter';
 import { io, Socket } from 'socket.io-client';
-import Debug from 'src/app/Debug';
 import Http from 'src/app/classes/Http';
-import { LoginRegisterComponent } from 'src/app/pages/login-menu/register/login-register.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogError } from 'src/app/dialogs/Error/dialog-error';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,7 @@ import { LoginRegisterComponent } from 'src/app/pages/login-menu/register/login-
 export class WebsocketService {
   websocket!: Socket;
 
-  constructor() {
-  }
+  constructor(private dialog:MatDialog, private router: Router) { }
 
   init(){
 
@@ -25,6 +24,8 @@ export class WebsocketService {
 
     this.websocket.on('SendDataToClient', (data:any) => {
 
+      console.log("Nachricht empfangen");
+
       var blob = new Blob([data.data], { type: 'audio/webm;codecs=opus' });
 
       const audioUrl = URL.createObjectURL(blob);
@@ -32,10 +33,25 @@ export class WebsocketService {
       audio.play();
     });
 
+    this.websocket.on("ServerStatusResponse", (data:any) => {
+
+      this.dialog.open(DialogError, {
+        data:{
+          title: 'Audio Send Error',
+          message: data.message,
+        }
+      });
+
+      if(data.status == 301){
+        this.router.navigate(["/UserMenu"]);
+      }
+    });
+
     this.websocket.on('disconnected', () => {
       console.log("WebSocket disconnect");
       /* TODO: Insecure! You could potentially kill other sessions! */
       this.websocket.emit('ClientDisconnect', localStorage.getItem("username"));
+      this.router.navigate(["/LoginMenu"]);
     });
 
     this.websocket.on("connect", () => {
@@ -51,6 +67,10 @@ export class WebsocketService {
   }
 
   send(data:any){
-     this.websocket.emit("sendDataToServer",data)
+    if(this.websocket != undefined && !this.websocket.disconnected){
+      this.websocket.emit("sendDataToServer",data)
+    }else{
+      this.router.navigate(["/LoginMenu"]);
+    }
   }
 }

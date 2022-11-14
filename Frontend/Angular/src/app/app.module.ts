@@ -3,7 +3,6 @@ import {HttpClientModule} from '@angular/common/http';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MatDialogModule, } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AudioContextModule } from 'angular-audio-context';
 import { CookieModule } from 'ngx-cookie';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,7 +35,6 @@ import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.compo
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    AudioContextModule.forRoot('balanced'),
     CookieModule.withOptions()
   ],
   exports: [],

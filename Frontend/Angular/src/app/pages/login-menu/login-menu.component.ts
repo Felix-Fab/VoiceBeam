@@ -6,7 +6,6 @@ import { DialogError } from 'src/app/dialogs/Error/dialog-error';
 import { Router } from '@angular/router';
 import { WebsocketService } from "src/app/services/WebSocket/websocket.service";
 import Http from 'src/app/classes/Http';
-import { AudioContext } from 'angular-audio-context';
 import { CookieService } from 'ngx-cookie';
 
 interface LoginConfig{
@@ -23,7 +22,7 @@ interface LoginConfig{
 export class LoginMenuComponent implements OnInit {
   Subscription: any;
 
-  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private audioContext: AudioContext, private _webSocket: WebsocketService, private cookieService: CookieService) { }
+  constructor(private http: HttpClient,private dialog:MatDialog,private router: Router, private _webSocket: WebsocketService, private cookieService: CookieService) { }
 
   ngOnInit(): void {
 

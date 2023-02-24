@@ -1,35 +1,159 @@
-#parent {
-    background-color: darkorange;
+body{
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+#Header{
+    display: block;
+}
+
+#Title{
+    color: #f24726;
+    font-size: 24px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    margin: 30% 0 0 33px;
+}
+
+.InputField{
+    background-color: white;
+    height: 50px;
+    width: 280px;
+    display: flex;
+    border-radius: 4px;
+    margin: 30px auto auto;
+}
+
+input {
     height: 100%;
     width: 100%;
-    display: flex;
-	align-items: center; /* Vertikale Zentrierung */
-	justify-content: center; /* Horizontale Zentrierung */
-}
-
-h1 {
-    color: white;
-    font-size: 50px;
-    text-align: center;
-    font-style: italic;
     font-weight: bold;
-    margin-top: -100px;
+    outline: none;
+    border: none;
+    margin-left: 7px;
+    border-radius: 4px;
+    font-size: 17px;
+  }
+  
+input::placeholder{
+    color: lightgray;
+    font-size: 17px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
 }
 
-#register-area {
-    text-align: center;
-    padding: 0 10px 0 10px;
+#ActionButtons{
+    position: absolute;
+    bottom: 25px;
+    display: flex;
     width: 100%;
-    margin-top: 100px;
+    justify-content: space-between;
 }
 
-#create-button {
-    text-align: center;
-    margin-top: 40px;
-    width: 100%;
+#Register{
+    width: 115px;
+    height: 45px;
+    align-content: center;
+    border-radius: 65px;
+    background-color: #f24726;
+    margin-right: 20px;
 }
 
-a.link {
-    color: white;
-    float: left;
+#Login{
+    color: #f24726;
+    font-size: 13px;
+    font-family: 'Open Sans', sans-serif;
+    margin: auto 0 auto 25px;
+    font-weight: bold;
 }
+.wrapper {
+    width: 75px;
+    height: 35px;
+    position: relative;
+    z-index: 1;
+    margin-top: 12px;
+  }
+  
+  .circle {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    border-radius: 50%;
+    background-color: #fff;
+    left: 15%;
+    transform-origin: 50%;
+    animation: circle7124 .5s alternate infinite ease;
+  }
+  
+  @keyframes circle7124 {
+    0% {
+      top: 15px;
+      height: 5px;
+      border-radius: 50px 50px 25px 25px;
+      transform: scaleX(1.4);
+    }
+  
+    40% {
+      height: 10px;
+      border-radius: 50%;
+      transform: scaleX(1);
+    }
+  
+    100% {
+      top: 0%;
+    }
+  }
+  
+  .circle:nth-child(2) {
+    left: 45%;
+    animation-delay: .2s;
+  }
+  
+  .circle:nth-child(3) {
+    left: auto;
+    right: 15%;
+    animation-delay: .3s;
+  }
+  
+  .shadow {
+    width: 20px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.9);
+    position: absolute;
+    top: 62px;
+    transform-origin: 50%;
+    z-index: -1;
+    left: 15%;
+    filter: blur(1px);
+    animation: shadow046 .5s alternate infinite ease;
+  }
+  
+  @keyframes shadow046 {
+    0% {
+      transform: scaleX(1.5);
+    }
+  
+    40% {
+      transform: scaleX(1);
+      opacity: .7;
+    }
+  
+    100% {
+      transform: scaleX(.2);
+      opacity: .4;
+    }
+  }
+  
+  .shadow:nth-child(4) {
+    left: 45%;
+    animation-delay: .2s
+  }
+  
+  .shadow:nth-child(5) {
+    left: auto;
+    right: 15%;
+    animation-delay: .3s;
+  }

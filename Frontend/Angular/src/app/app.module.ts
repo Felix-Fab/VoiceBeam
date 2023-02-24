@@ -15,7 +15,8 @@ import { DialogError } from './dialogs/Error/dialog-error';
 import { DialogWarning } from './dialogs/Warning/dialog-warning';
 import { DialogInfo } from './dialogs/Info/dialog-info';
 import { AudioSendComponent } from './pages/audio-send/audio-send.component';
-import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.component'
+import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.component';
+import { NavBarComponent } from './nav-bar/nav-bar.component'
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SettingsMenuComponent } from './pages/settings-menu/settings-menu.compo
     UserMenuComponent,
     TopBarComponent,
     AudioSendComponent,
-    SettingsMenuComponent
+    SettingsMenuComponent,
+    NavBarComponent
   ],
   imports: [
     AppRoutingModule,

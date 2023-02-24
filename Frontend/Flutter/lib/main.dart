@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
+import 'package:voicebeam/Pages/UserMenu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +34,8 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LocalStorage localStorage = LocalStorage('voicebeam');
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -40,6 +43,11 @@ class Login extends StatelessWidget {
 
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+
+    if(localStorage.getItem("accessToken") != null){
+      //Navigate to UserMenu
+
+    }
 
     return Scaffold(
       backgroundColor: Colors.orange,
@@ -132,8 +140,8 @@ class Login extends StatelessWidget {
                       ),
                       onPressed: () async => {
                         if(formKey.currentState!.validate()){
-                          if(await checkLoginData(emailController.text.toString(), passwordController.text.toString(), context)){
-                            debugger()
+                          if(await checkLoginData(emailController.text.toString(), passwordController.text.toString(), context, localStorage)){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const UserMenu()))
                           }
                         }
                       },
@@ -174,7 +182,7 @@ class HexColor extends Color {
   HexColor(final String hex) : super(_getColor(hex));
 }
 
-Future<bool> checkLoginData(String email, String password, BuildContext context) async {
+Future<bool> checkLoginData(String email, String password, BuildContext context, LocalStorage localStorage) async {
 
   Map data = {
     'email': email,
@@ -198,6 +206,8 @@ Future<bool> checkLoginData(String email, String password, BuildContext context)
         break;
 
       case 200:
+        final body = json.decode(response.body);
+        localStorage.setItem("accessToken", body["accessToken"]);
         return true;
 
       default:

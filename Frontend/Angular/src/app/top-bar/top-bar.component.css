@@ -1,12 +1,11 @@
 h1 {
     color: white;
-    font-size: 30px;
-    font-style: italic;
-    font-weight: bold;
+    font-size: 25px;
+    margin-top: 20px;
 }
 #top-bar {
     display: flex;
-    background-color: var(--primary-color);
+    background-color: #f24726;
     height: 60px;
     width: 100%;
 }
@@ -15,14 +14,14 @@ h1 {
 	align-items: center;
     height: 100%;
     width: 100%;
-    padding: 15px;
+    padding: 10px;
 }
-#settings {
+#Person {
     margin: 0 0 0 auto;
     font-size: 32px;
     transition: 0.3s;
 }
 
-#settings:active {
+#Person:active {
     color: #272727
 }

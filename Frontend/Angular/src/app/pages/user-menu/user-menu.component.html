@@ -1,5 +1,5 @@
 <app-top-bar></app-top-bar>
-<div id="users" style="text-align: center;">
+<div id="users" style="text-align: center; height: 85%;">
     <div class="user" *ngFor="let user of users">
         <div class="content" (click)="onClickUser(user.username)">
             <span class="material-icons">account_circle</span>
@@ -8,3 +8,4 @@
     </div>
     <p id="NoUsers" style="margin-top: 15px;" hidden>Keine Benutzer online</p>
 </div>
+<app-nav-bar></app-nav-bar>

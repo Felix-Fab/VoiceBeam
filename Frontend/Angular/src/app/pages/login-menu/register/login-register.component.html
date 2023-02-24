@@ -1,16 +1,48 @@
 <head>
     <link rel="stylesheet" href="login-register.component.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+
 <body>
-    <div id="parent">
-        <div id="block">
-            <h1>VoiceBeam</h1>
-            <div id="register-area">
-                <input id="username" type="text" name="password" placeholder="Username" style="margin-bottom: 12px;">
-                <input id="email" type="email" name="email" placeholder="Email" style="margin-bottom: 12px;">
-                <input id="password" type="password" name="passwort" placeholder="Password">
-                <button id="create-button" (click)="createUser()">Create</button>
+    <div id="Content" style="z-index: 1; position: absolute; width: 100%; height: 100%;">
+        <div id="Navigation">
+            <span class="material-icons" routerLink="/.." style="margin-top: 20px; margin-left: 17px; color: white; font-size: 30px; font-weight: bold;">arrow_back_ios</span>
+        </div>
+        <div id="Header">
+            <h1 id="Title">Account erstellen</h1>
+        </div>
+        <div id="UserInformations">
+            <div class="InputField">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">person</span>
+                <input id="Username" type="text" placeholder="Benutzername">
             </div>
+            <div class="InputField" style="margin-top: 15px;">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">mail</span>
+                <input id="Email" type="email" placeholder="Email">
+            </div>
+            <div class="InputField" style="margin-top: 30px;">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">key</span>
+                <input id="Passwort" type="password" placeholder="Passwort">
+            </div>
+            <div class="InputField" style="margin-top: 15px;">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">key</span>
+                <input id="PasswortAgain" type="password" placeholder="Passwort wiederholen">
+            </div>
+        </div>
+
+        <div id="ActionButtons">
+            <p id="Login" routerLink="/..">Zur Anmeldung</p>
+            <button id="Register" (click)="createUser()" style="display: flex; justify-content: center; align-items: center;">
+                <p id="RegisterText" style="font-size: 16px; color: white; margin-top: auto; margin-bottom: auto; z-index: 0; position: absolute;">Register</p>
+                <div id="LoadingWrapper" class="wrapper" hidden>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="shadow"></div>
+                    <div class="shadow"></div>
+                    <div class="shadow"></div>
+                </div>
+            </button>
         </div>
     </div>
 </body>

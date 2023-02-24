@@ -1,0 +1,21 @@
+#Navbar{
+    width: 100%;
+    height: 67px;
+    background-color: #f24726;
+    display: flex;
+    bottom: 0px;
+}
+
+.Action{
+    color: white;
+    width: 33%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -5px;
+}
+
+.Action p , span{
+    color: white;
+}

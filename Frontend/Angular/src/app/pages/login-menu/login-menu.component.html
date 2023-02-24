@@ -1,17 +1,39 @@
 <head>
     <link rel="stylesheet" href="login-menu.component.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+
 <body>
-    <div id="parent">
-        <div id="block">
-            <h1>VoiceBeam</h1>
-            <div id="login-area">
-                <input id="email" type="email" name="email" placeholder="Email" style="margin-bottom: 12px;">
-                <input id="password" type="password" name="passwort" placeholder="Password">
-                <a class="link">Forgot password?</a>
-                <button (click)="onButtonLoginClick($event)" id="login-button">Login</button>
-                <a routerLink="register" class="link" style="margin-top: 6px;">Create a new account</a>
+    <div id="Content" style="z-index: 1; position: absolute; width: 100%; height: 100%;">
+        <div id="Header">
+            <h1 id="Title">Login</h1>
+            <h3 id="TitleDescription">Einloggen zum fortfahren</h3>
+        </div>
+        <div id="UserInformations">
+            <div class="InputField">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">mail</span>
+                <input id="Email" type="text" placeholder="Email">
             </div>
+            <div class="InputField" style="margin-top: 15px;">
+                <span class="material-icons" style="margin-top: auto; margin-bottom: auto; margin-left: 5px;">key</span>
+                <input id="Passwort" type="password" placeholder="Passwort">
+            </div>
+            <p id="Reset">Passwort vergessen?</p>
+        </div>
+
+        <div id="ActionButtons">
+            <p id="Register" routerLink="register">Noch nicht<br>registriert?</p>
+            <button id="Login" (click)="onButtonLoginClick($event)" style="display: flex; justify-content: center; align-items: center;">
+                <p id="LoginText" style="font-size: 16px; color: white; margin-top: auto; margin-bottom: auto; z-index: 0; position: absolute;">Login</p>
+                <div id="LoadingWrapper" class="wrapper" hidden>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="shadow"></div>
+                    <div class="shadow"></div>
+                    <div class="shadow"></div>
+                </div>
+            </button>
         </div>
     </div>
 </body>
